@@ -26,15 +26,8 @@
 \date{}
 \maketitle
 
-% Read the CSV data
-\pgfplotstableread[col sep=comma, sci]{./csv/ycsb_results.csv}{\data}
-\pgfplotstableread[col sep=comma, sci]{./csv/occupancy_results.csv}{\occupancydata}
-\pgfplotstableread[col sep=comma, sci]{./csv/throughput_space_eff_results.csv}{\throughputdata}
-\pgfplotstableread[col sep=comma, sci]{./csv/load_factor_support_results.csv}{\loadfactordata}
-\pgfplotstableread[col sep=comma, sci]{./csv/scaling_results.csv}{\scalingdata}
-\pgfplotstableread[col sep=comma, sci]{./csv/occupancy_experimental_box.csv}{\occbox}
-\pgfplotstableread[col sep=comma, sci]{./csv/occupancy_poisson.csv}{\occpois}
-\pgfplotstableread[col sep=comma, sci]{./csv/data_size_scaling_results.csv}{\datasizedata}
+\newcommand{\readdatafiledir}{./}
+\input{read_data}
 
 % Dictionary reference table
 \section{Dictionary Mapping}

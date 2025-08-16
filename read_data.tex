@@ -1,0 +1,11 @@
+% Data loading file for TPHT paper
+% This file loads all CSV data files from the plots submodule
+
+\pgfplotstableread[col sep=comma, sci]{\readdatafiledir csv/ycsb_results.csv}{\data}
+\pgfplotstableread[col sep=comma, sci]{\readdatafiledir csv/occupancy_results.csv}{\occupancydata}
+\pgfplotstableread[col sep=comma, sci]{\readdatafiledir csv/throughput_space_eff_results.csv}{\throughputdata}
+\pgfplotstableread[col sep=comma, sci]{\readdatafiledir csv/load_factor_support_results.csv}{\loadfactordata}
+\pgfplotstableread[col sep=comma, sci]{\readdatafiledir csv/scaling_results.csv}{\scalingdata}
+\pgfplotstableread[col sep=comma, sci]{\readdatafiledir csv/occupancy_experimental_box.csv}{\occbox}
+\pgfplotstableread[col sep=comma, sci]{\readdatafiledir csv/occupancy_poisson.csv}{\occpois}
+\pgfplotstableread[col sep=comma, sci]{\readdatafiledir csv/data_size_scaling_results.csv}{\datasizedata}
