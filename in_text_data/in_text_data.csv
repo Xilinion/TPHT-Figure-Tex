@@ -1,0 +1,12 @@
+id,name,value
+1,max_ycsb_run_throughput_ops,691843958.0
+2,max_ycsb_run_throughput_millions,691.8
+3,max_ycsb_object_id,20.0
+4,max_ycsb_case_id,22.0
+5,tpht_min_table_size,32767.0
+6,tpht_max_table_size,134217727.0
+7,tpht_min_size_throughput,32767000.0
+8,tpht_max_size_throughput,6555200.0
+9,tpht_size_performance_ratio,5.0
+10,occupancy_0_2_probability,0.9197
+11,median_occupancy_level,1.0
