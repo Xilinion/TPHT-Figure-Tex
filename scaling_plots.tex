@@ -79,19 +79,16 @@
     \vspace{0.5cm}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure*}[p]
     \centering
-    
     % Display shared legend
-    {\footnotesize \pgfplotslegendfromname{scaling-legend}}
-    \vspace{0.3cm}
-
+    {\pgfplotslegendfromname{scaling-legend}}
     % Case 1
-    \begin{subfigure}[b]{0.24\textwidth}
+    \begin{subfigure}[b]{0.27\textwidth}
         \centering
         \begin{tikzpicture}
             \begin{axis}[
-                    width=4.5cm,
+                    width=5cm,
                     height=4cm,
                     xlabel={Threads},
                     ylabel={Throughput(M/s)},
@@ -108,8 +105,8 @@
                     ytick={0.1,1,10,100},
                     grid=major,
                     grid style={gray!30},
-                    tick label style={font=\scriptsize},
-                    label style={font=\scriptsize},
+                    tick label style={font=\small},
+                    label style={font=\small},
                     % title={\getCaseName{1}},
                     % title style={font=\small},
                     scaled ticks=true,
@@ -121,17 +118,16 @@
             \end{axis}
         \end{tikzpicture}
         \caption{\getCaseName{1}}
-    \end{subfigure}
-    \hfill
+    \end{subfigure}%
     % Case 3
-    \begin{subfigure}[b]{0.24\textwidth}
+    \begin{subfigure}[b]{0.23\textwidth}
         \centering
         \begin{tikzpicture}
             \begin{axis}[
-                    width=4.5cm,
+                    width=5cm,
                     height=4cm,
                     xlabel={Threads},
-                    ylabel={Throughput(M/s)},
+                    % ylabel={Throughput(M/s)},
                     xmode=log,
                     ymode=log,
                     log basis x=2,
@@ -145,8 +141,8 @@
                     ytick={0.1,1,10,100,1000},
                     grid=major,
                     grid style={gray!30},
-                    tick label style={font=\scriptsize},
-                    label style={font=\scriptsize},
+                    tick label style={font=\small},
+                    label style={font=\small},
                     % title={\getCaseName{3}},
                     % title style={font=\small},
                     scaled ticks=true,
@@ -158,16 +154,16 @@
             \end{axis}
         \end{tikzpicture}
         \caption{\getCaseName{3}}
-    \end{subfigure}
+    \end{subfigure}%
     % Case 6
-    \begin{subfigure}[b]{0.24\textwidth}
+    \begin{subfigure}[b]{0.23\textwidth}
         \centering
         \begin{tikzpicture}
             \begin{axis}[
-                    width=4.5cm,
+                    width=5cm,
                     height=4cm,
                     xlabel={Threads},
-                    ylabel={Throughput(M/s)},
+                    % ylabel={Throughput(M/s)},
                     xmode=log,
                     ymode=log,
                     log basis x=2,
@@ -181,30 +177,27 @@
                     ytick={0.1,1,10,100,1000},
                     grid=major,
                     grid style={gray!30},
-                    tick label style={font=\scriptsize},
-                    label style={font=\scriptsize},
+                    tick label style={font=\small},
+                    label style={font=\small},
                     % title={\getCaseName{6}},
                     % title style={font=\small},
                     scaled ticks=true,
                     tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
                 ]
-
                 \AddAllObjectPlotsForScaling{6}
-
             \end{axis}
         \end{tikzpicture}
         \caption{\getCaseName{6}}
-    \end{subfigure}
-    \hfill
+    \end{subfigure}%
     % Case 7
-    \begin{subfigure}[b]{0.24\textwidth}
+    \begin{subfigure}[b]{0.23\textwidth}
         \centering
         \begin{tikzpicture}
             \begin{axis}[
-                    width=4.5cm,
+                    width=5cm,
                     height=4cm,
                     xlabel={Threads},
-                    ylabel={Throughput(M/s)},
+                    % ylabel={Throughput(M/s)},
                     xmode=log,
                     ymode=log,
                     log basis x=2,
@@ -218,8 +211,8 @@
                     ytick={0.1,1,10,100,1000},
                     grid=major,
                     grid style={gray!30},
-                    tick label style={font=\scriptsize},
-                    label style={font=\scriptsize},
+                    tick label style={font=\small},
+                    label style={font=\small},
                     % title={\getCaseName{7}},
                     % title style={font=\small},
                     scaled ticks=true,
@@ -231,8 +224,7 @@
             \end{axis}
         \end{tikzpicture}
         \caption{\getCaseName{7}}
-    \end{subfigure}
-
+    \end{subfigure}%
     \caption{Scaling Analysis for different hash table implementations across various operations. Each subfigure shows throughput scaling with thread count for a specific operation type.}
     \label{fig:scaling_analysis}
-\end{figure}
+\end{figure*}
