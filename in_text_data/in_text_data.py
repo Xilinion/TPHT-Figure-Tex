@@ -174,13 +174,25 @@ class DataProcessor:
     
     def make_latex_safe_name(self, name: str) -> str:
         """Convert a name to be LaTeX-safe for use in newcommand."""
-        # Replace invalid characters with valid ones
+        # Keep only the base name but convert numbers to words
+        number_words = {
+            '0': 'zero', '1': 'one', '2': 'two', '3': 'three', '4': 'four',
+            '5': 'five', '6': 'six', '7': 'seven', '8': 'eight', '9': 'nine'
+        }
+        
+        # Replace underscores with nothing (keep original name structure)
         latex_name = name.replace("_", "")
+        
+        # Replace numbers with words
+        for digit, word in number_words.items():
+            latex_name = latex_name.replace(digit, word)
+        
+        # Remove other invalid characters
         latex_name = latex_name.replace("-", "")
         latex_name = latex_name.replace(".", "")
         latex_name = latex_name.replace(" ", "")
         
-        # Ensure it starts with a letter
+        # Ensure it starts with a letter (should be fine now since we convert numbers)
         if latex_name and not latex_name[0].isalpha():
             latex_name = "data" + latex_name
         
