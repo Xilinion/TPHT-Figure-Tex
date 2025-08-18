@@ -15,63 +15,67 @@
     x=table_size,
     y expr=\thisrow{throughput (ops/s)}/1000000,
     restrict expr to domain={\thisrow{case_id}}{#1:#1},
-    restrict expr to domain={\thisrow{object_id}}{6:6}
+    restrict expr to domain={\thisrow{object_id}}{6:6},
+    restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
   ] {\datasizedata};
   % Iceberg (7)
   \addplot[IcebergLineStyle] table[
     x=table_size,
     y expr=\thisrow{throughput (ops/s)}/1000000,
     restrict expr to domain={\thisrow{case_id}}{#1:#1},
-    restrict expr to domain={\thisrow{object_id}}{7:7}
+    restrict expr to domain={\thisrow{object_id}}{7:7},
+    restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
   ] {\datasizedata};
   % Junction (15)
   \addplot[JunctionLineStyle] table[
     x=table_size,
     y expr=\thisrow{throughput (ops/s)}/1000000,
     restrict expr to domain={\thisrow{case_id}}{#1:#1},
-    restrict expr to domain={\thisrow{object_id}}{15:15}
+    restrict expr to domain={\thisrow{object_id}}{15:15},
+    restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
   ] {\datasizedata};
   % TPHT (17)
   \addplot[TPHTLineStyle] table[
     x=table_size,
     y expr=\thisrow{throughput (ops/s)}/1000000,
     restrict expr to domain={\thisrow{case_id}}{#1:#1},
-    restrict expr to domain={\thisrow{object_id}}{17:17}
+    restrict expr to domain={\thisrow{object_id}}{17:17},
+    restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
   ] {\datasizedata};
   % Blast (20)
   \addplot[BlastLineStyle] table[
     x=table_size,
     y expr=\thisrow{throughput (ops/s)}/1000000,
     restrict expr to domain={\thisrow{case_id}}{#1:#1},
-    restrict expr to domain={\thisrow{object_id}}{20:20}
+    restrict expr to domain={\thisrow{object_id}}{20:20},
+    restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
   ] {\datasizedata};
 }
 
 % Shared legend (reuse scaling legend styles)
-\begin{figure}[p]
+\begin{figure*}[p]
   \centering
-  {\footnotesize \pgfplotslegendfromname{scaling-legend}}
-  \vspace{0.3cm}
-
+  {\pgfplotslegendfromname{scaling-legend}}
   % Case 1
-  \begin{subfigure}[b]{0.48\textwidth}
+  \begin{subfigure}[b]{0.27\textwidth}
+    \tiny
     \centering
     \begin{tikzpicture}
       \begin{axis}[
-        width=6cm,
-        height=4cm,
-        xlabel={Table Size},
-        ylabel={Throughput (M ops/s)},
+        width=5cm,
+        height=4.5cm,
+        xlabel={Table Size (MB)},
+        ylabel={Throughput (M/s)},
         xmode=log,
         log basis x=2,
-        xmin=2e4,
-        xmax=2e8,
+        xmin=131072,
+        xmax=268435456,
+        xtick={262144,2097152,16777216,134217728},
+        xticklabels={4,32,256,2048},
         grid=major,
         grid style={gray!30},
         tick label style={font=\small},
         label style={font=\small},
-        title={\getScalingCaseName{1}},
-        title style={font=\small},
         scaled ticks=true,
         tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
       ]
@@ -79,28 +83,27 @@
       \end{axis}
     \end{tikzpicture}
     \caption{\getScalingCaseName{1}}
-  \end{subfigure}
-  \hfill
-
+  \end{subfigure}%
   % Case 3
-  \begin{subfigure}[b]{0.48\textwidth}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \tiny
     \centering
     \begin{tikzpicture}
       \begin{axis}[
-        width=6cm,
-        height=4cm,
-        xlabel={Table Size},
-        ylabel={Throughput (M ops/s)},
+        width=5cm,
+        height=4.5cm,
+        xlabel={Table Size (MB)},
+        % ylabel={Throughput (M/s)},
         xmode=log,
         log basis x=2,
-        xmin=2e4,
-        xmax=2e8,
+        xmin=131072,
+        xmax=268435456,
+        xtick={262144,2097152,16777216,134217728},
+        xticklabels={4,32,256,2048},
         grid=major,
         grid style={gray!30},
         tick label style={font=\small},
         label style={font=\small},
-        title={\getScalingCaseName{3}},
-        title style={font=\small},
         scaled ticks=true,
         tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
       ]
@@ -108,27 +111,27 @@
       \end{axis}
     \end{tikzpicture}
     \caption{\getScalingCaseName{3}}
-  \end{subfigure}
-
+  \end{subfigure}%
   % Case 6
-  \begin{subfigure}[b]{0.48\textwidth}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \tiny
     \centering
     \begin{tikzpicture}
       \begin{axis}[
-        width=6cm,
-        height=4cm,
-        xlabel={Table Size},
-        ylabel={Throughput (M ops/s)},
+        width=5cm,
+        height=4.5cm,
+        xlabel={Table Size (MB)},
+        % ylabel={Throughput (M/s)},
         xmode=log,
         log basis x=2,
-        xmin=2e4,
-        xmax=2e8,
+        xmin=131072,
+        xmax=268435456,
+        xtick={262144,2097152,16777216,134217728},
+        xticklabels={4,32,256,2048},
         grid=major,
         grid style={gray!30},
         tick label style={font=\small},
         label style={font=\small},
-        title={\getScalingCaseName{6}},
-        title style={font=\small},
         scaled ticks=true,
         tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
       ]
@@ -136,28 +139,27 @@
       \end{axis}
     \end{tikzpicture}
     \caption{\getScalingCaseName{6}}
-  \end{subfigure}
-  \hfill
-
+  \end{subfigure}%
   % Case 7
-  \begin{subfigure}[b]{0.48\textwidth}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \tiny
     \centering
     \begin{tikzpicture}
       \begin{axis}[
-        width=6cm,
-        height=4cm,
-        xlabel={Table Size},
-        ylabel={Throughput (M ops/s)},
+        width=5cm,
+        height=4.5cm,
+        xlabel={Table Size (MB)},
+        % ylabel={Throughput (M/s)},
         xmode=log,
         log basis x=2,
-        xmin=2e4,
-        xmax=2e8,
+        xmin=131072,
+        xmax=268435456,
+        xtick={262144,2097152,16777216,134217728},
+        xticklabels={4,32,256,2048},
         grid=major,
         grid style={gray!30},
         tick label style={font=\small},
         label style={font=\small},
-        title={\getScalingCaseName{7}},
-        title style={font=\small},
         scaled ticks=true,
         tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
       ]
@@ -165,10 +167,7 @@
       \end{axis}
     \end{tikzpicture}
     \caption{\getScalingCaseName{7}}
-  \end{subfigure}
-
+  \end{subfigure}%
   \caption{Throughput vs Table Size (log-x) across operations. Styles match prior figures.}
   \label{fig:data_size_scaling}
-\end{figure}
-
-
+\end{figure*}
