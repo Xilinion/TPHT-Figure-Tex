@@ -137,6 +137,85 @@ class DataProcessor:
         self.add_result("occupancy_0_2_probability", round(low_occupancy_prob, 4))
         self.add_result("median_occupancy_level", median_occupancy)
     
+    def calculate_ycsb_throughput_analysis(self):
+        """
+        Calculate YCSB throughput analysis for the paper.
+        
+        Uses: ycsb_results.csv
+        Calculates: Comprehensive throughput metrics for different workloads
+        """
+        df = self.get_dataframe('ycsb_results')
+        
+        # Filter for entry_id=0 (no resizing)
+        df = df[df['entry_id'] == 0]
+        
+        # Map object_ids to hash table names
+        # object_id: 6=Cuckoo, 7=Iceberg, 15=Junction, 17=TPHT, 20=Blast(Flattened-TPHT)
+        ht_mapping = {6: 'cuckoo', 7: 'iceberg', 15: 'junction', 17: 'tpht', 20: 'blast'}
+        
+        # 1. Average throughput across all workloads
+        avg_fill = df.groupby('object_id')['fill_throughput (ops/s)'].mean()
+        avg_run = df.groupby('object_id')['run_throughput (ops/s)'].mean()
+        
+        for obj_id, name in ht_mapping.items():
+            if obj_id in avg_fill.index:
+                self.add_result(f"{name}_avg_fill_throughput_mops", round(avg_fill[obj_id] / 1_000_000, 1))
+                self.add_result(f"{name}_avg_run_throughput_mops", round(avg_run[obj_id] / 1_000_000, 1))
+        
+        # 2. Load (insertion) performance - case_id=17
+        load_data = df[df['case_id'] == 17]
+        blast_load = load_data[load_data['object_id'] == 20]['fill_throughput (ops/s)'].iloc[0]
+        tpht_load = load_data[load_data['object_id'] == 17]['fill_throughput (ops/s)'].iloc[0]
+        cuckoo_load = load_data[load_data['object_id'] == 6]['fill_throughput (ops/s)'].iloc[0]
+        iceberg_load = load_data[load_data['object_id'] == 7]['fill_throughput (ops/s)'].iloc[0]
+        junction_load = load_data[load_data['object_id'] == 15]['fill_throughput (ops/s)'].iloc[0]
+        
+        self.add_result("blast_load_throughput_mops", round(blast_load / 1_000_000, 1))
+        self.add_result("blast_vs_cuckoo_load_speedup", round(blast_load / cuckoo_load, 1))
+        self.add_result("blast_vs_iceberg_load_speedup", round(blast_load / iceberg_load, 1))
+        self.add_result("blast_vs_junction_load_speedup", round(blast_load / junction_load, 1))
+        
+        # 3. Run A (50/50 mix) performance - case_id=17
+        run_a_data = df[df['case_id'] == 17]
+        blast_run_a = run_a_data[run_a_data['object_id'] == 20]['run_throughput (ops/s)'].iloc[0]
+        cuckoo_run_a = run_a_data[run_a_data['object_id'] == 6]['run_throughput (ops/s)'].iloc[0]
+        fastest_baseline = max(cuckoo_run_a, 
+                              run_a_data[run_a_data['object_id'] == 7]['run_throughput (ops/s)'].iloc[0],
+                              run_a_data[run_a_data['object_id'] == 15]['run_throughput (ops/s)'].iloc[0])
+        
+        self.add_result("blast_run_a_throughput_mops", round(blast_run_a / 1_000_000, 1))
+        self.add_result("blast_vs_fastest_baseline_run_a_speedup", round(blast_run_a / fastest_baseline, 1))
+        
+        # 4. Negative queries (Run C-) vs Positive queries (Run C) - case_id=22 vs 19
+        run_c_neg_data = df[df['case_id'] == 22]  # Run C-
+        run_c_pos_data = df[df['case_id'] == 19]  # Run C
+        
+        blast_c_neg = run_c_neg_data[run_c_neg_data['object_id'] == 20]['run_throughput (ops/s)'].iloc[0]
+        blast_c_pos = run_c_pos_data[run_c_pos_data['object_id'] == 20]['run_throughput (ops/s)'].iloc[0]
+        
+        # Get negative query speedups for Blast
+        cuckoo_c_neg = run_c_neg_data[run_c_neg_data['object_id'] == 6]['run_throughput (ops/s)'].iloc[0]
+        iceberg_c_neg = run_c_neg_data[run_c_neg_data['object_id'] == 7]['run_throughput (ops/s)'].iloc[0]
+        junction_c_neg = run_c_neg_data[run_c_neg_data['object_id'] == 15]['run_throughput (ops/s)'].iloc[0]
+        
+        # Best positive query performance among baselines
+        fastest_pos_baseline = max(run_c_pos_data[run_c_pos_data['object_id'] == 6]['run_throughput (ops/s)'].iloc[0],
+                                  run_c_pos_data[run_c_pos_data['object_id'] == 7]['run_throughput (ops/s)'].iloc[0],
+                                  run_c_pos_data[run_c_pos_data['object_id'] == 15]['run_throughput (ops/s)'].iloc[0])
+        
+        self.add_result("blast_neg_query_throughput_mops", round(blast_c_neg / 1_000_000, 1))
+        self.add_result("blast_vs_cuckoo_neg_speedup", round(blast_c_neg / cuckoo_c_neg, 1))
+        self.add_result("blast_vs_iceberg_neg_speedup", round(blast_c_neg / iceberg_c_neg, 1))
+        self.add_result("blast_vs_junction_neg_speedup", round(blast_c_neg / junction_c_neg, 1))
+        self.add_result("blast_pos_vs_neg_slowdown_pct", round((blast_c_pos - blast_c_neg) / blast_c_neg * 100, 1))
+        self.add_result("blast_vs_fastest_pos_baseline_slowdown_pct", round((fastest_pos_baseline - blast_c_pos) / blast_c_pos * 100, 1))
+        
+        # 5. TPHT (Chained-TPHT) negative vs positive query performance
+        tpht_c_neg = run_c_neg_data[run_c_neg_data['object_id'] == 17]['run_throughput (ops/s)'].iloc[0]
+        tpht_c_pos = run_c_pos_data[run_c_pos_data['object_id'] == 17]['run_throughput (ops/s)'].iloc[0]
+        
+        self.add_result("tpht_neg_vs_pos_speedup", round(tpht_c_neg / tpht_c_pos, 1))
+    
     # ==========================================================================
     # ADD YOUR CALCULATION FUNCTIONS HERE
     # ==========================================================================
@@ -166,6 +245,7 @@ class DataProcessor:
         self.calculate_max_ycsb_throughput()
         self.calculate_data_size_scaling_performance()
         self.calculate_occupancy_statistics()
+        self.calculate_ycsb_throughput_analysis()
         
         # Add calls to your new functions here:
         # self.your_new_function()
