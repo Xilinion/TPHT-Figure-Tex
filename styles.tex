@@ -11,7 +11,13 @@
     IcebergBarStyle/.style={fill=exp2!35, draw=exp2!80},
     JunctionBarStyle/.style={fill=exp3!35, draw=exp3!80},
     TPHTBarStyle/.style={fill=exp4!35, draw=exp4!80},
-    BlastBarStyle/.style={fill=poisson!35, draw=poisson!80}
+    BlastBarStyle/.style={fill=poisson!35, draw=poisson!80},
+    % Macro-based aliases
+    htthreeBarStyle/.style={CuckooBarStyle},
+    htfourBarStyle/.style={IcebergBarStyle},
+    htfiveBarStyle/.style={JunctionBarStyle},
+    htoneBarStyle/.style={TPHTBarStyle},
+    httwoBarStyle/.style={BlastBarStyle}
 } 
 
 % Define line styles for each object (used in line/scatter charts)
@@ -20,7 +26,13 @@
     IcebergLineStyle/.style={color=exp2, mark=square, mark size=2.5pt, thick, smooth},
     JunctionLineStyle/.style={color=exp3, mark=triangle, mark size=2.5pt, thick, smooth},
     TPHTLineStyle/.style={color=exp4, mark=diamond, mark size=2.5pt, thick, smooth},
-    BlastLineStyle/.style={color=poisson, mark=pentagon, mark size=2.5pt, thick, smooth}
+    BlastLineStyle/.style={color=poisson, mark=pentagon, mark size=2.5pt, thick, smooth},
+    % Macro-based aliases
+    htthreeLineStyle/.style={CuckooLineStyle},
+    htfourLineStyle/.style={IcebergLineStyle},
+    htfiveLineStyle/.style={JunctionLineStyle},
+    htoneLineStyle/.style={TPHTLineStyle},
+    httwoLineStyle/.style={BlastLineStyle}
 }
 
 % Additional utility styles
@@ -35,5 +47,11 @@
     IcebergStyle/.style={IcebergBarStyle},
     JunctionStyle/.style={JunctionBarStyle},
     TPHTStyle/.style={TPHTBarStyle},
-    BlastStyle/.style={BlastBarStyle}
+    BlastStyle/.style={BlastBarStyle},
+    % Additional macro-based aliases
+    htthreeStyle/.style={CuckooBarStyle},
+    htfourStyle/.style={IcebergBarStyle},
+    htfiveStyle/.style={JunctionBarStyle},
+    htoneStyle/.style={TPHTBarStyle},
+    httwoStyle/.style={BlastBarStyle}
 }

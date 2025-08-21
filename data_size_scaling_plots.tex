@@ -10,7 +10,7 @@
 
 % Helper to add all 5 objects with consistent styles
 \newcommand{\AddAllObjectsForDataSize}[1]{%
-  % Cuckoo (6)
+  % \htthree (6)
   \addplot[CuckooLineStyle] table[
     x=table_size,
     y expr=\thisrow{throughput (ops/s)}/1000000,
@@ -18,7 +18,7 @@
     restrict expr to domain={\thisrow{object_id}}{6:6},
     restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
   ] {\datasizedata};
-  % Iceberg (7)
+  % \htfour (7)
   \addplot[IcebergLineStyle] table[
     x=table_size,
     y expr=\thisrow{throughput (ops/s)}/1000000,
@@ -26,7 +26,7 @@
     restrict expr to domain={\thisrow{object_id}}{7:7},
     restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
   ] {\datasizedata};
-  % Junction (15)
+  % \htfive (15)
   \addplot[JunctionLineStyle] table[
     x=table_size,
     y expr=\thisrow{throughput (ops/s)}/1000000,
@@ -34,7 +34,7 @@
     restrict expr to domain={\thisrow{object_id}}{15:15},
     restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
   ] {\datasizedata};
-  % TPHT (17)
+  % \htone (17)
   \addplot[TPHTLineStyle] table[
     x=table_size,
     y expr=\thisrow{throughput (ops/s)}/1000000,
@@ -42,7 +42,7 @@
     restrict expr to domain={\thisrow{object_id}}{17:17},
     restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
   ] {\datasizedata};
-  % Blast (20)
+  % \httwo (20)
   \addplot[BlastLineStyle] table[
     x=table_size,
     y expr=\thisrow{throughput (ops/s)}/1000000,
