@@ -1,0 +1,137 @@
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \vspace{0pt}
+
+    % Left: Load Factor (blue) with shading and markers
+    \begin{tikzpicture}
+        \begin{axis}[
+                width=\linewidth,
+                height=7cm,
+                xlabel={Bin Size},
+                ylabel={Load Factor Support (\%)},
+                xmode=log,
+                xmin=2,
+                xmax=190,
+                ymin=0,
+                ymax=105,
+                grid=major,
+                grid style={gray!30},
+                % clip=false,
+                legend style={draw=none, font=\small, at={(0.5,1.02)}, anchor=south},
+                legend columns=1,
+                tick label style={font=\small},
+                label style={font=\small},
+                scaled ticks=true,
+                xtick={3,7,15,31,63,127},
+                xticklabels={$2^2$,$2^3$,$2^4$,$2^5$,$2^6$,$2^7$}
+            ]
+
+            % Legend entries
+            \addlegendimage{CuckooLineStyle, mark=o, mark size=2.5pt}
+            \addlegendentry{Insertion Only}
+            \addlegendimage{PoissonLineStyle, mark=square*, mark size=2.5pt}
+            \addlegendentry{With Deletion}
+
+            % Insertion (CSV) shaded area and line with markers
+            \addplot[name path=insLineMini, draw=none] table[
+                    x=bin_size,
+                    y index=3,
+                    col sep=comma,
+                    restrict expr to domain={\thisrow{object_id}}{4:4}
+                ] {\loadfactordata};
+            \addplot[name path=insBaseMini, draw=none] coordinates {(3,0) (127,0)};
+            \addplot[fill=exp1!25, fill opacity=0.35, draw=none, forget plot] fill between[of=insLineMini and insBaseMini];
+            \addplot[CuckooLineStyle, mark=o, mark size=2.5pt] table[
+                    x=bin_size,
+                    y index=3,
+                    col sep=comma,
+                    restrict expr to domain={\thisrow{object_id}}{4:4}
+                ] {\loadfactordata};
+
+            % Deletion (hardcoded) shaded area and line with markers
+            \addplot[name path=delLineMini, draw=none] coordinates {
+                    (3,7)
+                    (7,43)
+                    (15,71)
+                    (31,85)
+                    (63,91)
+                    (127,95)
+                };
+            \addplot[name path=delBaseMini, draw=none] coordinates {(3,0) (127,0)};
+            \addplot[fill=poisson!25, fill opacity=0.35, draw=none, forget plot] fill between[of=delLineMini and delBaseMini];
+            \addplot[PoissonLineStyle, mark=square, mark size=2.5pt] coordinates {
+                    (3,7)
+                    (7,43)
+                    (15,71)
+                    (31,85)
+                    (63,91)
+                    (127,95)
+                };
+        \end{axis}
+    \end{tikzpicture}
+
+    \captionof{figure}{Load factor support by bin size with shaded areas under each curve.}
+    \label{fig:prob_load_mini}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \vspace{0pt}
+
+    % Right: Occupancy (log scale) with boxplots and shaded Poisson
+    \begin{tikzpicture}
+        \begin{axis}[
+                width=\linewidth,
+                height=7cm,
+                xlabel={Number of Balls per Bin},
+                ylabel={Probability (Log Scale)},
+                ymode=log,
+                ymin=1e-9,
+                ymax=1,
+                xmin=-0.5,
+                xmax=11.5,
+                xtick={0,1,2,3,4,5,6,7,8,9,10,11},
+                xticklabels={0,1,2,3,4,5,6,7,8,9,10,11},
+                grid=major,
+                grid style={gray!30},
+                % clip=false,
+                legend style={draw=none, font=\small, at={(0.5,1.02)}, anchor=south},
+                legend columns=1,
+                every boxplot/.style={fill=exp1!25, draw=exp1},
+                tick label style={font=\small},
+                label style={font=\small}
+            ]
+
+            % Legend entries
+            \addlegendimage{area legend, draw=exp1, fill=exp1!25}
+            \addlegendentry{Experimental (box plot)}
+            \addlegendimage{PoissonLineStyle}
+            \addlegendentry{Poisson Theory ($\lambda=1$)}
+
+            % Box plots 0..11
+            \foreach \i in {0,1,2,3,4,5,6,7,8,9,10,11} {
+                \pgfplotstablegetelem{\i}{lower_whisker}\of{\occbox}\edef\lw{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{lower}\of{\occbox}\edef\lq{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{median}\of{\occbox}\edef\med{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{upper}\of{\occbox}\edef\uq{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{upper_whisker}\of{\occbox}\edef\uw{\pgfplotsretval}
+                \edef\boxopts{boxplot prepared={draw position=\i, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y}
+                \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
+            }
+
+            % Shaded Poisson under curve and line on top
+            \addplot[fill=poisson!25, fill opacity=0.35, draw=none, forget plot] table[
+                    x=x,
+                    y=y
+                ] {\occpois} |- (axis cs:10,1.1e-9) -- (axis cs:0,1.1e-9) -- cycle;
+            \addplot[PoissonLineStyle, mark=none] table[
+                    x=x,
+                    y=y
+                ] {\occpois};
+        \end{axis}
+    \end{tikzpicture}
+
+    \captionof{figure}{Hash occupancy distribution (log scale) with experimental box plots and shaded Poisson theory curve.}
+    \label{fig:prob_occ_mini}
+\end{minipage}

@@ -1,7 +1,7 @@
-\section{Hash Function Occupancy Distribution Analysis}
 
 \begin{figure}[p]
     \centering
+    \pgfplotslegendfromname{occlegend}
 
     % Box plot style occupancy distribution
     \begin{subfigure}[b]{0.48\textwidth}
@@ -13,40 +13,48 @@
                     xlabel={Number of Balls per Bin},
                     ylabel={Probability (Log Scale)},
                     ymode=log,
-                    ymin=1e-8,
+                    ymin=1e-9,
                     ymax=1,
                     xmin=-0.5,
-                    xmax=10.5,
+                    xmax=11.5,
                     xtick={0,1,2,3,4,5,6,7,8,9,10,11},
                     xticklabels={0,1,2,3,4,5,6,7,8,9,10,11},
                     grid=major,
                     grid style={gray!30},
-                    legend pos=south west,
-                    legend style={font=\small},
+                    every boxplot/.style={fill=exp1!25, draw=exp1},
+                    legend to name=occlegend,
+                    legend columns=1,
+                    legend style={draw=none, font=\small},
                     tick label style={font=\small},
-                    label style={font=\small},
-                    title={Experimental Distribution vs Theory},
-                    title style={font=\small}
+                    label style={font=\small}
                 ]
 
-                % Box plots for occupancy 0-11 using manual extraction
-                \foreach \i in {0,1,2,3,4,5,6,7,8,9,10,11} {
-                    \pgfplotstablegetelem{\i}{lower_whisker}\of{\occbox}\edef\lw{\pgfplotsretval}
-                    \pgfplotstablegetelem{\i}{lower}\of{\occbox}\edef\lq{\pgfplotsretval}
-                    \pgfplotstablegetelem{\i}{median}\of{\occbox}\edef\med{\pgfplotsretval}
-                    \pgfplotstablegetelem{\i}{upper}\of{\occbox}\edef\uq{\pgfplotsretval}
-                    \pgfplotstablegetelem{\i}{upper_whisker}\of{\occbox}\edef\uw{\pgfplotsretval}
-                    \edef\tempstyle{every boxplot/.style={fill=exp1!25, draw=exp1}, boxplot prepared={draw position=\i, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}}
-                    \expandafter\addplot\expandafter+\expandafter[\tempstyle] coordinates {};
-                }
+                % Unified legend symbols (exported to figure-level legend)
+                \addlegendimage{area legend, draw=exp1, fill=exp1!25}
                 \addlegendentry{Experimental (box plot)}
+                \addlegendimage{PoissonLineStyle}
+                \addlegendentry{Poisson Theory ($\lambda=1$)}
 
-                % Plot smooth Poisson line (theoretical data)
+                % Box plots for occupancy 0-11 (simple explicit entries)
+                \foreach \i in {0,1,2,3,4,5,6,7,8,9,10,11} {
+                        \pgfplotstablegetelem{\i}{lower_whisker}\of{\occbox}\edef\lw{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{lower}\of{\occbox}\edef\lq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{median}\of{\occbox}\edef\med{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper}\of{\occbox}\edef\uq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper_whisker}\of{\occbox}\edef\uw{\pgfplotsretval}
+                        \edef\boxopts{boxplot prepared={draw position=\i, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y}
+                        \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
+                    }
+                % Fill under Poisson line (log axis) by closing to baseline
+                \addplot[fill=poisson!25, fill opacity=0.35, draw=none, forget plot] table[
+                        x=x,
+                        y=y
+                    ] {\occpois} |- (axis cs:10,1.1e-9) -- (axis cs:0,1.1e-9) -- cycle;
+                % Draw visible Poisson line on top
                 \addplot[PoissonLineStyle, mark=none] table[
                         x=x,
                         y=y
                     ] {\occpois};
-                \addlegendentry{Poisson Theory ($\lambda=1$)}
             \end{axis}
         \end{tikzpicture}
         \caption{Distribution Comparison (Log Scale)}
@@ -62,39 +70,40 @@
                     xlabel={Number of Balls per Bin},
                     ylabel={Probability},
                     xmin=-0.5,
-                    xmax=5.5,
+                    xmax=11.5,
                     ymin=0,
-                    xtick={1,2,3,4,5,6},
-                    xticklabels={0,1,2,3,4,5},
+                    xtick={0,1,2,3,4,5,6,7,8,9,10,11},
+                    xticklabels={0,1,2,3,4,5,6,7,8,9,10,11},
                     grid=major,
                     grid style={gray!30},
-                    legend pos=south west,
-                    legend style={font=\small},
+                    every boxplot/.style={fill=exp1!25, draw=exp1},
+                    legend style={draw=none, font=\small},
                     tick label style={font=\small},
-                    label style={font=\small},
-                    title={Linear Scale (0-5 balls)},
-                    title style={font=\small}
+                    label style={font=\small}
                 ]
 
-                % Box plots for occupancy 0-5 using manual extraction
+                % Box plots for occupancy 0-5 (simple explicit entries)
                 \foreach \i in {0,1,2,3,4,5} {
-                    \pgfplotstablegetelem{\i}{lower_whisker}\of{\occbox}\edef\lw{\pgfplotsretval}
-                    \pgfplotstablegetelem{\i}{lower}\of{\occbox}\edef\lq{\pgfplotsretval}
-                    \pgfplotstablegetelem{\i}{median}\of{\occbox}\edef\med{\pgfplotsretval}
-                    \pgfplotstablegetelem{\i}{upper}\of{\occbox}\edef\uq{\pgfplotsretval}
-                    \pgfplotstablegetelem{\i}{upper_whisker}\of{\occbox}\edef\uw{\pgfplotsretval}
-                    \edef\tempstyle{every boxplot/.style={fill=exp1!25, draw=exp1}, boxplot prepared={draw position=\i, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}}
-                    \expandafter\addplot\expandafter+\expandafter[\tempstyle] coordinates {};
-                }
-                \addlegendentry{Experimental (box plot)}
+                        \pgfplotstablegetelem{\i}{lower_whisker}\of{\occbox}\edef\lw{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{lower}\of{\occbox}\edef\lq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{median}\of{\occbox}\edef\med{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper}\of{\occbox}\edef\uq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper_whisker}\of{\occbox}\edef\uw{\pgfplotsretval}
+                        \edef\boxopts{boxplot prepared={draw position=\i, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y}
+                        \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
+                    }
 
-                % Plot smooth Poisson line (theoretical data)
+                % Fill under Poisson line (linear axis) by closing to baseline
+                \addplot[fill=poisson!25, fill opacity=0.35, draw=none, forget plot] table[
+                        x=x,
+                        y=y,
+                        restrict expr to domain={\thisrow{x}}{0:5}
+                    ] {\occpois} |- (axis cs:5,0) -- (axis cs:0,0) -- cycle;
                 \addplot[PoissonLineStyle, mark=none] table[
                         x=x,
                         y=y,
                         restrict expr to domain={\thisrow{x}}{0:5}
                     ] {\occpois};
-                \addlegendentry{Poisson Theory ($\lambda=1$)}
             \end{axis}
         \end{tikzpicture}
         \caption{Common Values (Linear Scale)}
@@ -102,4 +111,4 @@
 
     \caption{Hash Function Occupancy Distribution Analysis. Left: Full distribution on logarithmic scale showing rare events. Right: Linear scale focusing on common occupancy values (0-5 balls). The theoretical Poisson distribution is calculated directly in LaTeX. All experimental runs are shown as individual points.}
     \label{fig:occupancy_analysis}
-\end{figure} 
+\end{figure}

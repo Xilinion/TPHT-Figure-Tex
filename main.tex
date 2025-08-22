@@ -12,6 +12,7 @@
 
 \pgfplotsset{compat=1.17}
 \usepgfplotslibrary{statistics}
+\usepgfplotslibrary{fillbetween}
 
 % Include shared styles
 \input{styles}
@@ -63,8 +64,13 @@
 % Include throughput vs space efficiency plots
 \input{throughput_space_plots}
 
+% Include prob analysis plots
+\input{prob_analysis}
+
 % Include load factor support plots
 \input{load_factor_plots}
+
+\input{occupancy_plots}
 
 % Include scaling plots
 \input{scaling_plots}
