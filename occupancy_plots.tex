@@ -32,7 +32,7 @@
                 % Unified legend symbols (exported to figure-level legend)
                 \addlegendimage{area legend, draw=exp1, fill=exp1!25}
                 \addlegendentry{Experimental (box plot)}
-                \addlegendimage{PoissonLineStyle}
+                \addlegendimage{PoissonTheoryStyle}
                 \addlegendentry{Poisson Theory ($\lambda=1$)}
 
                 % Box plots for occupancy 0-11 (simple explicit entries)
@@ -51,7 +51,7 @@
                         y=y
                     ] {\occpois} |- (axis cs:10,1.1e-9) -- (axis cs:0,1.1e-9) -- cycle;
                 % Draw visible Poisson line on top
-                \addplot[PoissonLineStyle, mark=none] table[
+                \addplot[PoissonTheoryStyle, mark=none] table[
                         x=x,
                         y=y
                     ] {\occpois};
@@ -99,7 +99,7 @@
                         y=y,
                         restrict expr to domain={\thisrow{x}}{0:5}
                     ] {\occpois} |- (axis cs:5,0) -- (axis cs:0,0) -- cycle;
-                \addplot[PoissonLineStyle, mark=none] table[
+                \addplot[PoissonTheoryStyle, mark=none] table[
                         x=x,
                         y=y,
                         restrict expr to domain={\thisrow{x}}{0:5}
