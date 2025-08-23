@@ -217,6 +217,7 @@ class DataProcessor:
         baseline_objects = [6, 7, 15]  # Cuckoo, Iceberg, Junction
 
         htone_space_eff_percent = 0
+        httwo_space_eff_percent = 0
 
         baseline_space_eff_percent = []
         
@@ -229,6 +230,8 @@ class DataProcessor:
 
             if obj_id == 17:
                 htone_space_eff_percent = max_space_eff_percent
+            if obj_id == 20:
+                httwo_space_eff_percent = max_space_eff_percent
 
             if obj_id in baseline_objects:
                 baseline_space_eff_percent.append(max_space_eff_percent)
@@ -248,6 +251,13 @@ class DataProcessor:
 
         mean_space_eff_percent = np.mean(mem_shave_percent)
         self.add_result("htone_mem_shave_mean_percent", round(mean_space_eff_percent, 1))
+
+        mem_shave_percent_httwo = []
+        for p in baseline_space_eff_percent:
+            mem_shave_percent_httwo.append((1 - p / httwo_space_eff_percent)*100)
+        
+        mean_space_eff_percent_httwo = np.mean(mem_shave_percent_httwo)
+        self.add_result("httwo_mem_shave_mean_percent", round(mean_space_eff_percent_httwo, 1))
 
 
 
@@ -290,6 +300,32 @@ class DataProcessor:
         throughput_ratio = htfive_low_throughput / httwo_low_throughput
         self.add_result("htfive_over_httwo_low_load_ratio", round(throughput_ratio, 1))
     
+    def calculate_load_factor_metrics(self):
+        """
+        Calculate load factor support metrics for the prob_analysis.tex section.
+        
+        Uses: load_factor_support_results.csv
+        Calculates: Load factor support percentages for different bin sizes and workloads
+        """
+        df = self.get_dataframe('load_factor_support_results')
+        
+        # Filter for object_id=4 (our hash table implementation)
+        df_filtered = df[df['object_id'] == 4].copy()
+        
+        # Get the maximum bin size (127, which is 2^7-1)
+        max_bin_size = df_filtered['bin_size'].max()
+        max_bin_data = df_filtered[df_filtered['bin_size'] == max_bin_size]
+        
+        if not max_bin_data.empty:
+            # Load factor support for insertion-only workload (from CSV)
+            insertion_only_support = max_bin_data['load_factor (%)'].iloc[0]
+            self.add_result("insertion_only_load_factor_percent", round(insertion_only_support, 1))
+            
+            # Load factor support for deletion-included workload (hardcoded value of 95% from the plots)
+            # This corresponds to the "With Deletion" line at bin size 127 in the plot
+            deletion_included_support = 95.0
+            self.add_result("deletion_included_load_factor_percent", round(deletion_included_support, 1))
+    
     # ==========================================================================
     # ADD YOUR CALCULATION FUNCTIONS HERE
     # ==========================================================================
@@ -318,6 +354,7 @@ class DataProcessor:
         # Add calls to all your calculation functions here
         self.calculate_throughput_metrics()
         self.calculate_tradeoff_metrics()
+        self.calculate_load_factor_metrics()
         # Add calls to your new functions here:
         # self.your_new_function()
         

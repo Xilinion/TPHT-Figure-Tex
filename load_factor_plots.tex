@@ -27,7 +27,7 @@
         ]
 
         % Plot insertion data (from CSV) - blue with shade and markers
-        \addplot[name path=insLine, draw=none, CuckooLineStyle] table[
+        \addplot[name path=insLine, draw=none, InsertionOnlyStyle] table[
             x=bin_size,
             y index=3,
             col sep=comma,
@@ -36,7 +36,7 @@
         \addlegendentry{Insertion Only}
         \addplot[name path=insBase, draw=none] coordinates {(3,0) (127,0)};
         \addplot[fill=exp1!25, fill opacity=0.35, draw=none, forget plot] fill between[of=insLine and insBase];
-        \addplot[CuckooLineStyle, mark=o, mark size=2.5pt] table[
+        \addplot[InsertionOnlyStyle, mark=o, mark size=2.5pt] table[
             x=bin_size,
             y index=3,
             col sep=comma,
@@ -44,7 +44,7 @@
         ] {\loadfactordata};
 
         % Plot deletion data (hardcoded) - purple with shade and markers
-        \addplot[name path=delLine, draw=none, PoissonLineStyle] coordinates {
+        \addplot[name path=delLine, draw=none, WithDeletionStyle] coordinates {
             (3,7)
             (7,43)
             (15,71)
@@ -55,7 +55,7 @@
         \addlegendentry{With Deletion}
         \addplot[name path=delBase, draw=none] coordinates {(3,0) (127,0)};
         \addplot[fill=poisson!25, fill opacity=0.35, draw=none, forget plot] fill between[of=delLine and delBase];
-        \addplot[PoissonLineStyle, mark=square*, mark size=2.5pt] coordinates {
+        \addplot[WithDeletionStyle, mark=square*, mark size=2.5pt] coordinates {
             (3,7)
             (7,43)
             (15,71)
