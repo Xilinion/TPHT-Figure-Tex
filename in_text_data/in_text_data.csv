@@ -48,3 +48,6 @@ id,name,value
 47,htfive_over_httwo_low_load_ratio,2.2
 48,insertion_only_load_factor_percent,98.2
 49,deletion_included_load_factor_percent,95.0
+50,empty_bins_percent,36.79
+51,one_key_bins_percent,36.79
+52,max_whisker_diff_percent,0.048
