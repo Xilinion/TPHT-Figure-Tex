@@ -9,3 +9,7 @@
 \pgfplotstableread[col sep=comma, sci]{\readdatafiledir csv/occupancy_experimental_box.csv}{\occbox}
 \pgfplotstableread[col sep=comma, sci]{\readdatafiledir csv/occupancy_poisson.csv}{\occpois}
 \pgfplotstableread[col sep=comma, sci]{\readdatafiledir csv/data_size_scaling_results.csv}{\datasizedata}
+
+% New CSV files for intro figure
+\pgfplotstableread[col sep=comma, sci]{\readdatafiledir csv/ycsb_intro_summary.csv}{\ycsbintrodata}
+\pgfplotstableread[col sep=comma, sci]{\readdatafiledir csv/max_space_efficiency.csv}{\maxspaceeffdata}
