@@ -51,3 +51,17 @@ id,name,value
 50,empty_bins_percent,36.79
 51,one_key_bins_percent,36.79
 52,max_whisker_diff_percent,0.048
+53,htone_thread_scaling_factor,0.941
+54,httwo_thread_scaling_factor,0.92
+55,httwo_latency_shave_percent,5.3
+56,htthree_resizing_avg_fill_throughput,25.8
+57,htthree_resizing_avg_run_throughput,142.7
+58,htfour_resizing_avg_fill_throughput,65.7
+59,htfour_resizing_avg_run_throughput,86.1
+60,htfive_resizing_avg_fill_throughput,4.2
+61,htfive_resizing_avg_run_throughput,83.5
+62,htone_resizing_avg_fill_throughput,29.9
+63,htone_resizing_avg_run_throughput,65.2
+64,httwo_resizing_avg_fill_throughput,35.7
+65,httwo_resizing_avg_run_throughput,110.5
+66,htfour_resizing_throughput_decrease_percent,44.5

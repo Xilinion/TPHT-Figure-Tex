@@ -455,6 +455,114 @@ class DataProcessor:
         
         
 
+    def calculate_latency_shaving_metrics(self):
+        """
+        Calculate latency shaving metrics for the resizing.tex section.
+        
+        Uses: percentile_results.csv
+        Calculates: Percentage reduction in maximum tail latency for httwo vs fastest baseline
+        """
+        df = self.get_dataframe('percentile_results')
+        
+        # Filter for positive query operations (operation_type=0) and maximum percentile (100.0)
+        max_latency_data = df[(df['operation_type'] == 0) & (df['percentile'] == 100.0)]
+        
+        # Object ID mappings
+        baseline_objects = [6, 7, 15]  # htthree, htfour, htfive
+        httwo_object_id = 21
+        
+        # Get httwo maximum latency
+        httwo_max_data = max_latency_data[max_latency_data['object_id'] == httwo_object_id]
+        if httwo_max_data.empty:
+            print(f"Warning: No data found for httwo (object_id={httwo_object_id})")
+            return
+        
+        httwo_max_latency = httwo_max_data['latency_ns'].iloc[0]
+        
+        # Get baseline maximum latencies and find the fastest (lowest latency)
+        baseline_max_latencies = []
+        for obj_id in baseline_objects:
+            baseline_data = max_latency_data[max_latency_data['object_id'] == obj_id]
+            if not baseline_data.empty:
+                baseline_max_latencies.append(baseline_data['latency_ns'].iloc[0])
+        
+        if not baseline_max_latencies:
+            print("Warning: No baseline data found")
+            return
+        
+        # Find the fastest baseline (minimum latency)
+        fastest_baseline_latency = min(baseline_max_latencies)
+        
+        # Calculate percentage reduction
+        if fastest_baseline_latency > 0:
+            latency_reduction_percent = ((fastest_baseline_latency - httwo_max_latency) / fastest_baseline_latency) * 100
+            self.add_result("httwo_latency_shave_percent", round(latency_reduction_percent, 1))
+        else:
+            print("Warning: Invalid baseline latency data")
+    
+    def calculate_resizing_metrics(self):
+        """
+        Calculate resizing throughput metrics for the resizing.tex section.
+        
+        Uses: ycsb_results.csv (entry_id=1 for resizing experiments)
+        Calculates: Average throughputs and performance analysis with resizing enabled
+        """
+        df = self.get_dataframe('ycsb_results')
+        
+        # Filter for entry_id=1 (resizing experiments) 
+        df_resizing = df[df['entry_id'] == 1].copy()
+        
+        # Also get non-resizing data (entry_id=0) for comparison
+        df_no_resizing = df[df['entry_id'] == 0].copy()
+        
+        # Object ID to macro mapping (note: httwo is object_id=21 in resizing, 18 in resizing)
+        resizing_object_to_macro = {
+            6: 'htthree',   # Cuckoo
+            7: 'htfour',    # Iceberg  
+            15: 'htfive',   # Junction
+            18: 'htone',    # TPHT (object_id=18 in resizing experiments)
+            21: 'httwo'     # Blast (object_id=21 in resizing experiments)
+        }
+        
+        # === Average throughput calculations for resizing ===
+        # Calculate for all hash tables in resizing experiments
+        for obj_id, macro in resizing_object_to_macro.items():
+            ht_resizing_data = df_resizing[df_resizing['object_id'] == obj_id]
+            
+            if not ht_resizing_data.empty:
+                # Average fill throughput for Load phase (case_id=17)
+                fill_data = ht_resizing_data[ht_resizing_data['case_id'] == 17]['fill_throughput (ops/s)']
+                if not fill_data.empty:
+                    ht_resizing_fill_raw = fill_data.values[0]
+                    self.add_result(f"{macro}_resizing_avg_fill_throughput", round(ht_resizing_fill_raw / 1_000_000, 1))
+                
+                # Average run throughput across all run phases (case_ids 17-22)
+                ht_resizing_run_throughputs_raw = ht_resizing_data[ht_resizing_data['case_id'].isin([17, 18, 19, 20, 21, 22])]['run_throughput (ops/s)']
+                if not ht_resizing_run_throughputs_raw.empty:
+                    ht_resizing_avg_run_raw = ht_resizing_run_throughputs_raw.mean()
+                    self.add_result(f"{macro}_resizing_avg_run_throughput", round(ht_resizing_avg_run_raw / 1_000_000, 1))
+        
+        # === Throughput decrease analysis ===
+        # Compare resizing vs non-resizing for htfour to calculate throughput decrease
+        
+        # Get htfour non-resizing average (across fill and run)
+        htfour_no_resizing_data = df_no_resizing[df_no_resizing['object_id'] == 7]
+        htfour_no_resizing_fill_raw = htfour_no_resizing_data[htfour_no_resizing_data['case_id'] == 17]['fill_throughput (ops/s)'].values[0]
+        htfour_no_resizing_run_throughputs_raw = htfour_no_resizing_data[htfour_no_resizing_data['case_id'].isin([17, 18, 19, 20, 21, 22])]['run_throughput (ops/s)']
+        htfour_no_resizing_avg_run_raw = htfour_no_resizing_run_throughputs_raw.mean()
+        htfour_no_resizing_combined_avg = (htfour_no_resizing_fill_raw + htfour_no_resizing_avg_run_raw) / 2
+        
+        # Get htfour resizing average (across fill and run)
+        htfour_resizing_data = df_resizing[df_resizing['object_id'] == 7]
+        htfour_resizing_fill_raw = htfour_resizing_data[htfour_resizing_data['case_id'] == 17]['fill_throughput (ops/s)'].values[0]
+        htfour_resizing_run_throughputs_raw = htfour_resizing_data[htfour_resizing_data['case_id'].isin([17, 18, 19, 20, 21, 22])]['run_throughput (ops/s)']
+        htfour_resizing_avg_run_raw = htfour_resizing_run_throughputs_raw.mean()
+        htfour_resizing_combined_avg = (htfour_resizing_fill_raw + htfour_resizing_avg_run_raw) / 2
+        
+        # Calculate percentage decrease
+        htfour_throughput_decrease_percent = ((htfour_no_resizing_combined_avg - htfour_resizing_combined_avg) / htfour_no_resizing_combined_avg) * 100
+        self.add_result("htfour_resizing_throughput_decrease_percent", round(htfour_throughput_decrease_percent, 1))
+    
     # ==========================================================================
     # ADD YOUR CALCULATION FUNCTIONS HERE
     # ==========================================================================
@@ -486,6 +594,8 @@ class DataProcessor:
         self.calculate_load_factor_metrics()
         self.calculate_occupancy_analysis_metrics()
         self.calculate_tpht_thread_scaling_factor()
+        self.calculate_latency_shaving_metrics()
+        self.calculate_resizing_metrics()
         # Add calls to your new functions here:
         # self.your_new_function()
         
