@@ -455,6 +455,75 @@ class DataProcessor:
         
         
 
+    def calculate_incache_performance_degradation(self):
+
+        df = self.get_dataframe('data_size_scaling_results')
+        # Object IDs needed
+
+        obj_ids = [17] # only for TPHT at the moment
+        obj_names = ['htone']
+        incache_table_size = [262143, 2097151]
+        case_ids = [1] # only for insertion
+
+        assert len(obj_ids) == len(obj_names)
+        assert len(incache_table_size) == 2
+        # filter out the throughput for the above three parameters
+        # for each obj and case, calculate the throughput degradation
+        # percentage corresponded to the two table sizes
+        for obj_id in obj_ids:
+            for case_id in case_ids:
+                obj_case_data = df[(df['object_id'] == obj_id) & (df['case_id'] == case_id)]
+                if obj_case_data.empty:
+                    continue
+                
+                # Get throughput at the two incache table sizes
+                throughputs = []
+                for table_size in incache_table_size:
+                    size_data = obj_case_data[obj_case_data['table_size'] == table_size]
+                    if not size_data.empty:
+                        throughputs.append(size_data['throughput (ops/s)'].values[0])
+                
+                if len(throughputs) == 2:
+                    low_throughput, high_throughput = throughputs
+                    degradation_percent = ((low_throughput - high_throughput) / low_throughput) * 100
+                    obj_name = obj_names[obj_ids.index(obj_id)]
+                    self.add_result(f"{obj_name}_insertion_incache_performance_degradation_percent", round(degradation_percent, 1))
+
+    def calculate_inmem_performance_degradation(self):
+        
+        df = self.get_dataframe('data_size_scaling_results')
+        # Object IDs needed
+
+        obj_ids = [7] # only for Iceberg at the moment
+        obj_name = ['htfour']
+        inmem_table_size = [16777215, 134217727]
+        case_ids = [1] # only for insertion
+
+        assert len(obj_ids) == len(obj_name)
+        assert len(inmem_table_size) == 2
+
+        # filter out the throughput for the above three parameters
+        # for each obj and case, calculate the throughput degradation
+        # percentage corresponded to the two table sizes
+        for obj_id in obj_ids:
+            for case_id in case_ids:
+                obj_case_data = df[(df['object_id'] == obj_id) & (df['case_id'] == case_id)]
+                if obj_case_data.empty:
+                    continue
+                
+                # Get throughput at the two inmem table sizes
+                throughputs = []
+                for table_size in inmem_table_size:
+                    size_data = obj_case_data[obj_case_data['table_size'] == table_size]
+                    if not size_data.empty:
+                        throughputs.append(size_data['throughput (ops/s)'].values[0])
+                
+                if len(throughputs) == 2:
+                    low_throughput, high_throughput = throughputs
+                    degradation_percent = ((low_throughput - high_throughput) / low_throughput) * 100
+                    obj_name = obj_name[obj_ids.index(obj_id)]
+                    self.add_result(f"{obj_name}_insertion_inmem_performance_degradation_percent", round(degradation_percent, 1))
+
     def calculate_latency_shaving_metrics(self):
         """
         Calculate latency shaving metrics for the resizing.tex section.
@@ -594,6 +663,8 @@ class DataProcessor:
         self.calculate_load_factor_metrics()
         self.calculate_occupancy_analysis_metrics()
         self.calculate_tpht_thread_scaling_factor()
+        self.calculate_incache_performance_degradation()
+        self.calculate_inmem_performance_degradation()
         self.calculate_latency_shaving_metrics()
         self.calculate_resizing_metrics()
         # Add calls to your new functions here:
