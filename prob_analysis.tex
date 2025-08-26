@@ -72,7 +72,7 @@
         \end{axis}
     \end{tikzpicture}
 
-    \captionof{figure}{Load factor support by bin size with shaded areas under each curve.}
+    \captionof{figure}{Maximum load factor supported by power-of-two dereference tables across bin sizes, as described in \S\ref{subsec:tpimpl}.}
     \label{fig:prob_load_mini}
 \end{minipage}%
 \hfill%
@@ -108,7 +108,7 @@
             \addlegendimage{area legend, draw=exp1, fill=exp1!25}
             \addlegendentry{Experimental (box plot)}
             \addlegendimage{PoissonTheoryStyle}
-            \addlegendentry{Poisson Theory ($\lambda=1$)}
+            \addlegendentry{Poisson Approximation ($\lambda=1$)}
 
             % Box plots 0..11
             \foreach \i in {0,1,2,3,4,5,6,7,8,9,10,11} {
@@ -133,6 +133,6 @@
         \end{axis}
     \end{tikzpicture}
 
-    \captionof{figure}{Hash occupancy distribution (log scale) with experimental box plots and shaded Poisson theory curve.}
+    \captionof{figure}{Bin occupancy distribution comparing with smoothed Poisson approximation ($\lambda=1$).}
     \label{fig:prob_occ_mini}
 \end{minipage}
