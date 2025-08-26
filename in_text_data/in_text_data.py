@@ -326,6 +326,51 @@ class DataProcessor:
             deletion_included_support = 95.0
             self.add_result("deletion_included_load_factor_percent", round(deletion_included_support, 1))
     
+    def calculate_occupancy_analysis_metrics(self):
+        """
+        Calculate occupancy analysis metrics for the prob_analysis.tex section.
+        
+        Uses: occupancy_experimental_box.csv
+        Calculates: Percentages for empty bins, bins with one key, and whisker variance
+        """
+        df = self.get_dataframe('occupancy_experimental_box')
+        
+        # Get data for occupancy 0 (empty bins) and occupancy 1 (bins with one key)
+        empty_bins_data = df[df['occupancy'] == 0]
+        one_key_bins_data = df[df['occupancy'] == 1]
+        
+        if not empty_bins_data.empty and not one_key_bins_data.empty:
+            # Convert to percentages and round to 1 decimal place
+            empty_bins_percent = empty_bins_data['median'].iloc[0] * 100
+            one_key_bins_percent = one_key_bins_data['median'].iloc[0] * 100
+            
+            self.add_result("empty_bins_percent", round(empty_bins_percent, 2))
+            self.add_result("one_key_bins_percent", round(one_key_bins_percent, 2))
+            
+            # Calculate whisker variance as percentage difference from median
+            # For empty bins (occupancy = 0)
+            empty_median = empty_bins_data['median'].iloc[0]
+            empty_upper_whisker = empty_bins_data['upper_whisker'].iloc[0]
+            empty_lower_whisker = empty_bins_data['lower_whisker'].iloc[0]
+            
+            empty_upper_diff_percent = abs((empty_upper_whisker - empty_median) / empty_median) * 100
+            empty_lower_diff_percent = abs((empty_lower_whisker - empty_median) / empty_median) * 100
+            empty_max_whisker_diff = max(empty_upper_diff_percent, empty_lower_diff_percent)
+            
+            # For bins with one key (occupancy = 1)
+            one_median = one_key_bins_data['median'].iloc[0]
+            one_upper_whisker = one_key_bins_data['upper_whisker'].iloc[0]
+            one_lower_whisker = one_key_bins_data['lower_whisker'].iloc[0]
+            
+            one_upper_diff_percent = abs((one_upper_whisker - one_median) / one_median) * 100
+            one_lower_diff_percent = abs((one_lower_whisker - one_median) / one_median) * 100
+            one_max_whisker_diff = max(one_upper_diff_percent, one_lower_diff_percent)
+            
+            # Take the maximum whisker difference across both occupancy levels
+            max_whisker_diff = max(empty_max_whisker_diff, one_max_whisker_diff)
+            
+            self.add_result("max_whisker_diff_percent", round(max_whisker_diff, 3))
+    
     # ==========================================================================
     # ADD YOUR CALCULATION FUNCTIONS HERE
     # ==========================================================================
@@ -355,6 +400,7 @@ class DataProcessor:
         self.calculate_throughput_metrics()
         self.calculate_tradeoff_metrics()
         self.calculate_load_factor_metrics()
+        self.calculate_occupancy_analysis_metrics()
         # Add calls to your new functions here:
         # self.your_new_function()
         

@@ -3,31 +3,31 @@
 }
 
 \newcommand{\addAllIntroLoadPlots}{%
-\addIntroDataPlot{CuckooStyle}{1}{6}{1}
-\addIntroDataPlot{IcebergStyle}{2}{7}{1}
-\addIntroDataPlot{JunctionStyle}{3}{15}{1}
-\addIntroDataPlot{TPHTStyle}{4}{17}{1}
-\addIntroDataPlot{BlastStyle}{5}{20}{1}
+\addIntroDataPlot{CuckooStyle}{1.0}{6}{1}
+\addIntroDataPlot{IcebergStyle}{1.1}{7}{1}
+\addIntroDataPlot{JunctionStyle}{1.2}{15}{1}
+\addIntroDataPlot{TPHTStyle}{1.3}{17}{1}
+\addIntroDataPlot{BlastStyle}{1.4}{20}{1}
 }
 
 \newcommand{\addAllIntroRunPlots}{%
-\addIntroDataPlot{CuckooStyle}{10}{6}{2}
-\addIntroDataPlot{IcebergStyle}{11}{7}{2}
-\addIntroDataPlot{JunctionStyle}{12}{15}{2}
-\addIntroDataPlot{TPHTStyle}{13}{17}{2}
-\addIntroDataPlot{BlastStyle}{14}{20}{2}
+\addIntroDataPlot{CuckooStyle}{6.0}{6}{2}
+\addIntroDataPlot{IcebergStyle}{6.1}{7}{2}
+\addIntroDataPlot{JunctionStyle}{6.2}{15}{2}
+\addIntroDataPlot{TPHTStyle}{6.3}{17}{2}
+\addIntroDataPlot{BlastStyle}{6.4}{20}{2}
 }
 
 \newcommand{\addSpaceEffPlot}[3]{%
-\addplot[#1] table[x expr=#2, y expr=\thisrowno{1}, restrict expr to domain={\thisrow{object_id}}{#3:#3}]{\maxspaceeffdata};%
+\addplot[#1] table[x expr=#2, y expr=\thisrowno{1}*100, restrict expr to domain={\thisrow{object_id}}{#3:#3}]{\maxspaceeffdata};%
 }
 
 \newcommand{\addAllSpaceEffPlots}{%
-\addSpaceEffPlot{CuckooStyle}{0}{6}
-\addSpaceEffPlot{IcebergStyle}{1}{7}
-\addSpaceEffPlot{JunctionStyle}{2}{15}
-\addSpaceEffPlot{TPHTStyle}{3}{17}
-\addSpaceEffPlot{BlastStyle}{4}{20}
+\addSpaceEffPlot{CuckooStyle}{0.0}{6}
+\addSpaceEffPlot{IcebergStyle}{0.1}{7}
+\addSpaceEffPlot{JunctionStyle}{0.2}{15}
+\addSpaceEffPlot{TPHTStyle}{0.3}{17}
+\addSpaceEffPlot{BlastStyle}{0.4}{20}
 }
 
 \begin{figure}[h]
@@ -41,13 +41,13 @@
     \begin{tikzpicture}
     \begin{axis}[
         width=\linewidth,
-        height=6cm,
-        ylabel={Throughput (M ops/s)},
+        height=4.2cm,
+        ylabel={Throughput (M/s)},
         ylabel style={at={(ticklabel* cs:1.02)}, anchor=south},
         xlabel={},
         ybar,
         bar width=3pt,
-        xtick={0,15},
+        xtick={},
         xticklabels={},
         xtick style={draw=none},
         axis lines=box,
@@ -61,28 +61,33 @@
         try min ticks=5,
         grid style={gray!30},
         ymin=0,
-        xmin=-1,
-        xmax=16,
+        xmin=-5,
+        xmax=12.5,
         legend entries = {\htthree, \htfour, \htfive, \htone, \httwo},
         legend cell align = left,
-        legend style={draw=none, legend columns=5, /tikz/every even column/.append style={column sep=0.5cm}},
+        legend style={draw=none, legend columns=3, /tikz/every even column/.append style={column sep=0.3cm}},
         legend to name={intro-legend-horizontal}
     ]
     \addAllIntroLoadPlots
     \addAllIntroRunPlots
+    
+    % Add group labels
+    \node at (axis cs:-1,375) {\text{Load}};
+    \node at (axis cs:8.2,375) {\text{Run}};
     \end{axis}
     \end{tikzpicture}
-    \caption{Throughput comparison between Load and Run phases}
+    \caption{Throughput comparison on YCSB load and run phases.}
     \label{fig:intro_throughput}
     \end{subfigure}%
+    \hfill
     % Subfigure (b): Space efficiency comparison
     \begin{subfigure}[t]{0.38\linewidth}
     \centering
     \begin{tikzpicture}
     \begin{axis}[
         width=\linewidth,
-        height=6cm,
-        ylabel={Space Efficiency},
+        height=4.2cm,
+        ylabel={Space Efficiency (\%)},
         ylabel style={at={(ticklabel* cs:1.02)}, anchor=south},
         xlabel={},
         ybar,
@@ -100,12 +105,8 @@
         try min ticks=5,
         grid style={gray!30},
         ymin=0,
-        xmin=-1,
-        xmax=5,
-        legend entries = {\htthree, \htfour, \htfive, \htone, \httwo},
-        legend cell align = left,
-        legend style={draw=none, legend columns=5, /tikz/every even column/.append style={column sep=0.5cm}},
-        legend to name={intro-legend-horizontal}
+        xmin=-2.5,
+        xmax=3
     ]
     
     % Space efficiency data (from max_space_efficiency.csv)
@@ -113,7 +114,7 @@
     
     \end{axis}
     \end{tikzpicture}
-    \caption{Maximum space efficiency achieved by each method}
+    \caption{Maximum space efficiency achieved by each method.}
     \label{fig:intro_space_efficiency}
     \end{subfigure}
     \caption{Introduction to hash table performance: (a) Throughput comparison between Load and Run phases, (b) Maximum space efficiency achieved by each method.}
