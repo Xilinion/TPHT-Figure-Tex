@@ -371,6 +371,90 @@ class DataProcessor:
             
             self.add_result("max_whisker_diff_percent", round(max_whisker_diff, 3))
     
+    def calculate_tpht_thread_scaling_factor(self):
+        df = self.get_dataframe('scaling_results')
+
+        # Object IDs for TPHT variants
+        htone_id = 17  # TPHT
+        httwo_id = 20  # Blast
+        
+        # Case IDs to analyze
+        target_cases = [1, 3, 6, 7]
+        
+        # Function to calculate scaling factor for a given object and case
+        def calculate_scaling_factor(obj_id, case_id):
+            case_data = df[(df['object_id'] == obj_id) & (df['case_id'] == case_id)]
+            
+            if case_data.empty:
+                return None
+            
+            # Sort by thread number to ensure correct order
+            case_data = case_data.sort_values('thread_num')
+            
+            # Restrict to specific thread counts for consistent scaling analysis
+            target_threads = [1, 2, 4, 8, 16]  # Powers of 2 from 1 to 16
+            
+            # Filter data to only include target thread counts
+            filtered_data = case_data[case_data['thread_num'].isin(target_threads)]
+            
+            if len(filtered_data) < 2:
+                return None
+            
+            # Get thread counts and corresponding throughputs
+            threads = filtered_data['thread_num'].tolist()
+            throughputs = filtered_data['throughput (ops/s)'].tolist()
+            
+            # Use log-log linear regression to find power law relationship (like in coef.py)
+            # throughput = a * threads^b, where b is the scaling exponent
+            import math
+            
+            log_threads = [math.log(t) for t in threads]
+            log_throughput = [math.log(tp) for tp in throughputs]
+            
+            n = len(threads)
+            sum_log_threads = sum(log_threads)
+            sum_log_throughput = sum(log_throughput)
+            sum_log_threads_sq = sum(lt**2 for lt in log_threads)
+            sum_log_products = sum(log_threads[i] * log_throughput[i] for i in range(n))
+            
+            # Calculate power law exponent: throughput = a * threads^b
+            denominator = n * sum_log_threads_sq - sum_log_threads**2
+            if denominator == 0:
+                return None
+                
+            b = (n * sum_log_products - sum_log_threads * sum_log_throughput) / denominator
+            
+            # The scaling factor is the exponent b
+            # Perfect linear scaling (y = kx) would have b = 1.0
+            # b < 1.0 indicates diminishing returns with more threads
+            # b > 1.0 indicates super-linear scaling (rare)
+            return b
+        
+        # Calculate scaling factors for htone (object_id=17)
+        htone_scaling_factors = []
+        for case_id in target_cases:
+            scaling_factor = calculate_scaling_factor(htone_id, case_id)
+            if scaling_factor is not None:
+                htone_scaling_factors.append(scaling_factor)
+        
+        # Calculate scaling factors for httwo (object_id=20)
+        httwo_scaling_factors = []
+        for case_id in target_cases:
+            scaling_factor = calculate_scaling_factor(httwo_id, case_id)
+            if scaling_factor is not None:
+                httwo_scaling_factors.append(scaling_factor)
+        
+        # Calculate average scaling factors
+        if htone_scaling_factors:
+            htone_avg_scaling = sum(htone_scaling_factors) / len(htone_scaling_factors)
+            self.add_result("htone_thread_scaling_factor", round(htone_avg_scaling, 3))
+        
+        if httwo_scaling_factors:
+            httwo_avg_scaling = sum(httwo_scaling_factors) / len(httwo_scaling_factors)
+            self.add_result("httwo_thread_scaling_factor", round(httwo_avg_scaling, 3))
+        
+        
+
     # ==========================================================================
     # ADD YOUR CALCULATION FUNCTIONS HERE
     # ==========================================================================
@@ -401,6 +485,7 @@ class DataProcessor:
         self.calculate_tradeoff_metrics()
         self.calculate_load_factor_metrics()
         self.calculate_occupancy_analysis_metrics()
+        self.calculate_tpht_thread_scaling_factor()
         # Add calls to your new functions here:
         # self.your_new_function()
         
