@@ -211,7 +211,7 @@ class DataProcessor:
             7: 'htfour',    # Iceberg
             15: 'htfive',   # Junction
             17: 'htone',    # TPHT
-            20: 'httwo'     # Blast
+            23: 'httwo'     # Blast
         }
 
         baseline_objects = [6, 7, 15]  # Cuckoo, Iceberg, Junction
@@ -230,7 +230,7 @@ class DataProcessor:
 
             if obj_id == 17:
                 htone_space_eff_percent = max_space_eff_percent
-            if obj_id == 20:
+            if obj_id == 23:
                 httwo_space_eff_percent = max_space_eff_percent
 
             if obj_id in baseline_objects:
@@ -295,7 +295,7 @@ class DataProcessor:
         low_lf_case9 = case9_data[case9_data['load_factor'] == 0.05]
         
         htfive_low_throughput = low_lf_case9[low_lf_case9['object_id'] == 15]['throughput_millions'].iloc[0]
-        httwo_low_throughput = low_lf_case9[low_lf_case9['object_id'] == 20]['throughput_millions'].iloc[0]
+        httwo_low_throughput = low_lf_case9[low_lf_case9['object_id'] == 23]['throughput_millions'].iloc[0]
         
         throughput_ratio = htfive_low_throughput / httwo_low_throughput
         self.add_result("htfive_over_httwo_low_load_ratio", round(throughput_ratio, 1))
