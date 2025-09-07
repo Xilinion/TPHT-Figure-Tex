@@ -34,11 +34,11 @@
         restrict expr to domain={\thisrow{case_id}}{#1:#1}
     ] {\throughputdata};
 
-    % \httwo (object_id=20)
+    % \httwo (object_id=23)
     \addplot[BlastLineStyle] table[
         x=space_efficiency,
         y=throughput_millions,
-        restrict expr to domain={\thisrow{object_id}}{20:20},
+        restrict expr to domain={\thisrow{object_id}}{23:23},
         restrict expr to domain={\thisrow{case_id}}{#1:#1}
     ] {\throughputdata};
 }
@@ -47,7 +47,7 @@
 \pgfplotsset{
     spaceeff axis/.style={
         width=6.2cm,
-        height=4.5cm,
+        height=4cm,
         xlabel={Space Efficiency},
         xmin=-0.05,
         ymin=0,
