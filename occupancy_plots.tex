@@ -14,14 +14,13 @@
                     ylabel={Probability (Log Scale)},
                     ymode=log,
                     ymin=1e-9,
-                    ymax=1,
+                    ymax=2,
                     xmin=-0.5,
                     xmax=11.5,
                     xtick={0,1,2,3,4,5,6,7,8,9,10,11},
                     xticklabels={0,1,2,3,4,5,6,7,8,9,10,11},
                     grid=major,
                     grid style={gray!30},
-                    every boxplot/.style={fill=exp1!25, draw=exp1},
                     legend to name=occlegend,
                     legend columns=1,
                     legend style={draw=none, font=\small},
@@ -31,18 +30,56 @@
 
                 % Unified legend symbols (exported to figure-level legend)
                 \addlegendimage{area legend, draw=exp1, fill=exp1!25}
-                \addlegendentry{Experimental (box plot)}
+                \addlegendentry{Random Keys}
+                \addlegendimage{area legend, draw=exp2, fill=exp2!25}
+                \addlegendentry{Sequential Keys}
+                \addlegendimage{area legend, draw=exp3, fill=exp3!25}
+                \addlegendentry{Low Hamming Keys}
+                \addlegendimage{area legend, draw=exp4, fill=exp4!25}
+                \addlegendentry{High Hamming Keys}
                 \addlegendimage{PoissonTheoryStyle}
                 \addlegendentry{Poisson Theory ($\lambda=1$)}
 
-                % Box plots for occupancy 0-11 (simple explicit entries)
+                % Box plots for occupancy 0-11 with all key sets
                 \foreach \i in {0,1,2,3,4,5,6,7,8,9,10,11} {
-                        \pgfplotstablegetelem{\i}{lower_whisker}\of{\occbox}\edef\lw{\pgfplotsretval}
-                        \pgfplotstablegetelem{\i}{lower}\of{\occbox}\edef\lq{\pgfplotsretval}
-                        \pgfplotstablegetelem{\i}{median}\of{\occbox}\edef\med{\pgfplotsretval}
-                        \pgfplotstablegetelem{\i}{upper}\of{\occbox}\edef\uq{\pgfplotsretval}
-                        \pgfplotstablegetelem{\i}{upper_whisker}\of{\occbox}\edef\uw{\pgfplotsretval}
-                        \edef\boxopts{boxplot prepared={draw position=\i, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y}
+                        % Random keys (leftmost)
+                        \pgfplotstablegetelem{\i}{lower_whisker}\of{\occboxrandom}\edef\lw{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{lower}\of{\occboxrandom}\edef\lq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{median}\of{\occboxrandom}\edef\med{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper}\of{\occboxrandom}\edef\uq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper_whisker}\of{\occboxrandom}\edef\uw{\pgfplotsretval}
+                        \pgfmathsetmacro{\pos}{\i - 0.3}
+                        \edef\boxopts{boxplot prepared={draw position=\pos, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y, fill=exp1!25, draw=exp1}
+                        \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
+                        
+                        % Sequential keys
+                        \pgfplotstablegetelem{\i}{lower_whisker}\of{\occboxsequential}\edef\lw{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{lower}\of{\occboxsequential}\edef\lq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{median}\of{\occboxsequential}\edef\med{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper}\of{\occboxsequential}\edef\uq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper_whisker}\of{\occboxsequential}\edef\uw{\pgfplotsretval}
+                        \pgfmathsetmacro{\pos}{\i - 0.1}
+                        \edef\boxopts{boxplot prepared={draw position=\pos, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y, fill=exp2!25, draw=exp2, very thick}
+                        \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
+                        
+                        % Low Hamming keys
+                        \pgfplotstablegetelem{\i}{lower_whisker}\of{\occboxlowhamming}\edef\lw{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{lower}\of{\occboxlowhamming}\edef\lq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{median}\of{\occboxlowhamming}\edef\med{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper}\of{\occboxlowhamming}\edef\uq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper_whisker}\of{\occboxlowhamming}\edef\uw{\pgfplotsretval}
+                        \pgfmathsetmacro{\pos}{\i + 0.1}
+                        \edef\boxopts{boxplot prepared={draw position=\pos, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y, fill=exp3!25, draw=exp3}
+                        \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
+                        
+                        % High Hamming keys (rightmost)
+                        \pgfplotstablegetelem{\i}{lower_whisker}\of{\occboxhighhamming}\edef\lw{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{lower}\of{\occboxhighhamming}\edef\lq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{median}\of{\occboxhighhamming}\edef\med{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper}\of{\occboxhighhamming}\edef\uq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper_whisker}\of{\occboxhighhamming}\edef\uw{\pgfplotsretval}
+                        \pgfmathsetmacro{\pos}{\i + 0.3}
+                        \edef\boxopts{boxplot prepared={draw position=\pos, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y, fill=exp4!25, draw=exp4}
                         \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
                     }
                 % Fill under Poisson line (log axis) by closing to baseline
@@ -76,20 +113,51 @@
                     xticklabels={0,1,2,3,4,5,6,7,8,9,10,11},
                     grid=major,
                     grid style={gray!30},
-                    every boxplot/.style={fill=exp1!25, draw=exp1},
                     legend style={draw=none, font=\small},
                     tick label style={font=\small},
                     label style={font=\small}
                 ]
 
-                % Box plots for occupancy 0-5 (simple explicit entries)
+                % Box plots for occupancy 0-5 with all key sets
                 \foreach \i in {0,1,2,3,4,5} {
-                        \pgfplotstablegetelem{\i}{lower_whisker}\of{\occbox}\edef\lw{\pgfplotsretval}
-                        \pgfplotstablegetelem{\i}{lower}\of{\occbox}\edef\lq{\pgfplotsretval}
-                        \pgfplotstablegetelem{\i}{median}\of{\occbox}\edef\med{\pgfplotsretval}
-                        \pgfplotstablegetelem{\i}{upper}\of{\occbox}\edef\uq{\pgfplotsretval}
-                        \pgfplotstablegetelem{\i}{upper_whisker}\of{\occbox}\edef\uw{\pgfplotsretval}
-                        \edef\boxopts{boxplot prepared={draw position=\i, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y}
+                        % Random keys (leftmost)
+                        \pgfplotstablegetelem{\i}{lower_whisker}\of{\occboxrandom}\edef\lw{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{lower}\of{\occboxrandom}\edef\lq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{median}\of{\occboxrandom}\edef\med{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper}\of{\occboxrandom}\edef\uq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper_whisker}\of{\occboxrandom}\edef\uw{\pgfplotsretval}
+                        \pgfmathsetmacro{\pos}{\i - 0.3}
+                        \edef\boxopts{boxplot prepared={draw position=\pos, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y, fill=exp1!25, draw=exp1}
+                        \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
+                        
+                        % Sequential keys
+                        \pgfplotstablegetelem{\i}{lower_whisker}\of{\occboxsequential}\edef\lw{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{lower}\of{\occboxsequential}\edef\lq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{median}\of{\occboxsequential}\edef\med{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper}\of{\occboxsequential}\edef\uq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper_whisker}\of{\occboxsequential}\edef\uw{\pgfplotsretval}
+                        \pgfmathsetmacro{\pos}{\i - 0.1}
+                        \edef\boxopts{boxplot prepared={draw position=\pos, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y, fill=exp2!25, draw=exp2, very thick}
+                        \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
+                        
+                        % Low Hamming keys
+                        \pgfplotstablegetelem{\i}{lower_whisker}\of{\occboxlowhamming}\edef\lw{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{lower}\of{\occboxlowhamming}\edef\lq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{median}\of{\occboxlowhamming}\edef\med{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper}\of{\occboxlowhamming}\edef\uq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper_whisker}\of{\occboxlowhamming}\edef\uw{\pgfplotsretval}
+                        \pgfmathsetmacro{\pos}{\i + 0.1}
+                        \edef\boxopts{boxplot prepared={draw position=\pos, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y, fill=exp3!25, draw=exp3}
+                        \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
+                        
+                        % High Hamming keys (rightmost)
+                        \pgfplotstablegetelem{\i}{lower_whisker}\of{\occboxhighhamming}\edef\lw{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{lower}\of{\occboxhighhamming}\edef\lq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{median}\of{\occboxhighhamming}\edef\med{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper}\of{\occboxhighhamming}\edef\uq{\pgfplotsretval}
+                        \pgfplotstablegetelem{\i}{upper_whisker}\of{\occboxhighhamming}\edef\uw{\pgfplotsretval}
+                        \pgfmathsetmacro{\pos}{\i + 0.3}
+                        \edef\boxopts{boxplot prepared={draw position=\pos, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y, fill=exp4!25, draw=exp4}
                         \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
                     }
 
@@ -109,6 +177,6 @@
         \caption{Common Values (Linear Scale)}
     \end{subfigure}
 
-    \caption{Hash Function Occupancy Distribution Analysis. Left: Full distribution on logarithmic scale showing rare events. Right: Linear scale focusing on common occupancy values (0-5 balls). The theoretical Poisson distribution is calculated directly in LaTeX. All experimental runs are shown as individual points.}
+    \caption{Hash Function Occupancy Distribution Analysis for Different Key Sets. Left: Full distribution on logarithmic scale showing rare events. Right: Linear scale focusing on common occupancy values (0-5 balls). Box plots compare random, sequential, low Hamming distance, and high Hamming distance key sets against the theoretical Poisson distribution ($\lambda=1$).}
     \label{fig:occupancy_analysis}
 \end{figure}

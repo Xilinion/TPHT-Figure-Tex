@@ -19,7 +19,7 @@
                 grid=major,
                 grid style={gray!30},
                 % clip=false,
-                legend style={draw=none, font=\small, at={(0.5,1.02)}, anchor=south},
+                legend style={draw=none, font=\footnotesize, at={(0.5,1.02)}, anchor=south},
                 legend columns=1,
                 tick label style={font=\small},
                 label style={font=\small},
@@ -88,7 +88,7 @@
                 ylabel={Relative Frequency},
                 ymode=log,
                 ymin=1e-9,
-                ymax=1,
+                ymax=2.5,
                 ytick={1e-1, 1e-3, 1e-5, 1e-7, 1e-9},
                 xmin=-0.5,
                 xmax=11.5,
@@ -97,27 +97,65 @@
                 grid=major,
                 grid style={gray!30},
                 % clip=false,
-                legend style={draw=none, font=\small, at={(0.5,1.02)}, anchor=south},
-                legend columns=1,
-                every boxplot/.style={fill=exp1!25, draw=exp1},
+                legend style={draw=none, font=\footnotesize, at={(0.4,1.02)}, anchor=south, legend image post style={scale=0.5}},
+                legend columns=2,
+                legend cell align=left,
                 tick label style={font=\small},
                 label style={font=\small}
             ]
 
             % Legend entries
             \addlegendimage{area legend, draw=exp1, fill=exp1!25}
-            \addlegendentry{Experimental (box plot)}
+            \addlegendentry{Random}
+            \addlegendimage{area legend, draw=exp2, fill=exp2!25}
+            \addlegendentry{Sequential}
+            \addlegendimage{area legend, draw=exp3, fill=exp3!25}
+            \addlegendentry{Low Hamming}
+            \addlegendimage{area legend, draw=exp4, fill=exp4!25}
+            \addlegendentry{High Hamming}
             \addlegendimage{PoissonTheoryStyle}
-            \addlegendentry{Poisson Approximation ($\lambda=1$)}
+            \addlegendentry{Poisson ($\lambda=1$)}
 
-            % Box plots 0..11
+            % Box plots 0..11 with all key sets
             \foreach \i in {0,1,2,3,4,5,6,7,8,9,10,11} {
-                \pgfplotstablegetelem{\i}{lower_whisker}\of{\occbox}\edef\lw{\pgfplotsretval}
-                \pgfplotstablegetelem{\i}{lower}\of{\occbox}\edef\lq{\pgfplotsretval}
-                \pgfplotstablegetelem{\i}{median}\of{\occbox}\edef\med{\pgfplotsretval}
-                \pgfplotstablegetelem{\i}{upper}\of{\occbox}\edef\uq{\pgfplotsretval}
-                \pgfplotstablegetelem{\i}{upper_whisker}\of{\occbox}\edef\uw{\pgfplotsretval}
-                \edef\boxopts{boxplot prepared={draw position=\i, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y}
+                % Random keys (leftmost)
+                \pgfplotstablegetelem{\i}{lower_whisker}\of{\occboxrandom}\edef\lw{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{lower}\of{\occboxrandom}\edef\lq{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{median}\of{\occboxrandom}\edef\med{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{upper}\of{\occboxrandom}\edef\uq{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{upper_whisker}\of{\occboxrandom}\edef\uw{\pgfplotsretval}
+                \pgfmathsetmacro{\pos}{\i - 0.3}
+                \edef\boxopts{boxplot prepared={draw position=\pos, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y, fill=exp1!25, draw=exp1}
+                \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
+                
+                % Sequential keys
+                \pgfplotstablegetelem{\i}{lower_whisker}\of{\occboxsequential}\edef\lw{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{lower}\of{\occboxsequential}\edef\lq{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{median}\of{\occboxsequential}\edef\med{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{upper}\of{\occboxsequential}\edef\uq{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{upper_whisker}\of{\occboxsequential}\edef\uw{\pgfplotsretval}
+                \pgfmathsetmacro{\pos}{\i - 0.1}
+                \edef\boxopts{boxplot prepared={draw position=\pos, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y, fill=exp2!25, draw=exp2, very thick}
+                \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
+                
+                % Low Hamming keys
+                \pgfplotstablegetelem{\i}{lower_whisker}\of{\occboxlowhamming}\edef\lw{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{lower}\of{\occboxlowhamming}\edef\lq{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{median}\of{\occboxlowhamming}\edef\med{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{upper}\of{\occboxlowhamming}\edef\uq{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{upper_whisker}\of{\occboxlowhamming}\edef\uw{\pgfplotsretval}
+                \pgfmathsetmacro{\pos}{\i + 0.1}
+                \edef\boxopts{boxplot prepared={draw position=\pos, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y, fill=exp3!25, draw=exp3}
+                \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
+                
+                % High Hamming keys (rightmost)
+                \pgfplotstablegetelem{\i}{lower_whisker}\of{\occboxhighhamming}\edef\lw{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{lower}\of{\occboxhighhamming}\edef\lq{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{median}\of{\occboxhighhamming}\edef\med{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{upper}\of{\occboxhighhamming}\edef\uq{\pgfplotsretval}
+                \pgfplotstablegetelem{\i}{upper_whisker}\of{\occboxhighhamming}\edef\uw{\pgfplotsretval}
+                \pgfmathsetmacro{\pos}{\i + 0.3}
+                \edef\boxopts{boxplot prepared={draw position=\pos, lower whisker=\lw, lower quartile=\lq, median=\med, upper quartile=\uq, upper whisker=\uw}, boxplot/draw direction=y, fill=exp4!25, draw=exp4}
                 \expandafter\addplot\expandafter+\expandafter[\boxopts] coordinates {};
             }
 
