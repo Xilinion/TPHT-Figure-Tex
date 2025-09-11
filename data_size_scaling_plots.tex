@@ -6,7 +6,7 @@
   \ifnum#1=7 Negative Query\fi%
 }
 
-% Helper to add all 5 objects with consistent styles
+% Helper to add all 6 objects with consistent styles
 \newcommand{\AddAllObjectsForDataSize}[1]{%
   % \htthree (6)
   \addplot[CuckooLineStyle] table[
@@ -30,6 +30,14 @@
     y expr=\thisrow{throughput (ops/s)}/1000000,
     restrict expr to domain={\thisrow{case_id}}{#1:#1},
     restrict expr to domain={\thisrow{object_id}}{15:15},
+    restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
+  ] {\datasizedata};
+  % \htsix (24)
+  \addplot[TBBLineStyle] table[
+    x=table_size,
+    y expr=\thisrow{throughput (ops/s)}/1000000,
+    restrict expr to domain={\thisrow{case_id}}{#1:#1},
+    restrict expr to domain={\thisrow{object_id}}{24:24},
     restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
   ] {\datasizedata};
   % \htone (17)

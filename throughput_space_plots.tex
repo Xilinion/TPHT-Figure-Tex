@@ -26,6 +26,14 @@
         restrict expr to domain={\thisrow{case_id}}{#1:#1}
     ] {\throughputdata};
 
+    % \htsix (object_id=24)
+    \addplot[TBBLineStyle] table[
+        x=space_efficiency,
+        y=throughput_millions,
+        restrict expr to domain={\thisrow{object_id}}{24:24},
+        restrict expr to domain={\thisrow{case_id}}{#1:#1}
+    ] {\throughputdata};
+
     % \htone (object_id=17)
     \addplot[TPHTLineStyle] table[
         x=space_efficiency,
@@ -93,7 +101,7 @@
     \begin{subfigure}[b]{0.35\textwidth}
         \centering
         \begin{tikzpicture}
-        \begin{axis}[spaceeff axis with ylabel, legend to name={spaceeff-legend}, legend entries={\htthree, \htfour, \htfive, \htone, \httwo}, legend cell align=left, legend style={draw=none, legend columns=5, /tikz/every even column/.append style={column sep=0.5cm}}]
+        \begin{axis}[spaceeff axis with ylabel, legend to name={spaceeff-legend}, legend entries={\htthree, \htfour, \htfive, \htsix, \htone, \httwo}, legend cell align=left, legend style={draw=none, legend columns=6, /tikz/every even column/.append style={column sep=0.5cm}}]
         \AddAllObjectPlotsForCase{1}
         \end{axis}
         \end{tikzpicture}

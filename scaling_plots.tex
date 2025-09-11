@@ -35,6 +35,15 @@
         restrict expr to domain={\thisrow{thread_num}}{0:17}
     ] {\scalingdata};
     
+    % \htsix (object_id=24)
+    \addplot[TBBLineStyle] table[
+        x=thread_num,
+        y expr=\thisrow{throughput (ops/s)}/1000000,
+        restrict expr to domain={\thisrow{case_id}}{#1:#1},
+        restrict expr to domain={\thisrow{object_id}}{24:24},
+        restrict expr to domain={\thisrow{thread_num}}{0:17}
+    ] {\scalingdata};
+    
     % \htone (object_id=17)
     \addplot[TPHTLineStyle] table[
         x=thread_num,

@@ -4,17 +4,18 @@
 \addplot[#1] table[y expr=\thisrow{#3 (ops/s)}/1000000, restrict expr to domain={\thisrow{entry_id}}{#5:#5}, restrict expr to domain={\thisrow{case_id}}{#4:#4}, restrict expr to domain={\thisrow{object_id}}{#2:#2}]{\data};%
 }
 
-% Function to add all 5 plots for standard objects (6,7,15,17,20)
+% Function to add all 6 plots for standard objects (6,7,15,24,17,20)
 % #1 = case_id, #2 = throughput type, #3 = entry_id
 \newcommand{\addAllStandardPlots}[3]{%
 \addDataPlot{CuckooStyle}{6}{#2}{#1}{#3}
 \addDataPlot{IcebergStyle}{7}{#2}{#1}{#3}
 \addDataPlot{JunctionStyle}{15}{#2}{#1}{#3}
+\addDataPlot{TBBStyle}{24}{#2}{#1}{#3}
 \addDataPlot{TPHTStyle}{17}{#2}{#1}{#3}
 \addDataPlot{BlastStyle}{20}{#2}{#1}{#3}
 }
 
-% Function to add all 5 plots for resizing objects (6,7,15,18,21)
+% Function to add all 6 plots for resizing objects (6,7,15,18,21,24)
 % #1 = case_id, #2 = throughput type, #3 = entry_id
 \newcommand{\addAllResizingPlots}[3]{%
 \addDataPlot{CuckooStyle}{6}{#2}{#1}{#3}
@@ -22,6 +23,7 @@
 \addDataPlot{JunctionStyle}{15}{#2}{#1}{#3}
 \addDataPlot{TPHTStyle}{18}{#2}{#1}{#3}
 \addDataPlot{BlastStyle}{21}{#2}{#1}{#3}
+\addDataPlot{TBBStyle}{24}{#2}{#1}{#3}
 }
 
 % Define the 2D dictionary for case_id and entry_id mappings
@@ -70,9 +72,9 @@
     try min ticks=5,
     grid style={gray!30},
     ymin=0,
-    legend entries = {\htthree, \htfour, \htfive, \htone, \httwo},
+    legend entries = {\htthree, \htfour, \htfive, \htone, \httwo, \htsix},
     legend cell align = left,
-    legend style={draw=none, legend columns=5, /tikz/every even column/.append style={column sep=0.5cm}},
+    legend style={draw=none, legend columns=6, /tikz/every even column/.append style={column sep=0.5cm}},
     legend to name={throughput-legend-horizontal}
 ]
 \addAllStandardPlots{#1}{#3}{#4}
