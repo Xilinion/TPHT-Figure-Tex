@@ -83,6 +83,7 @@ class DataProcessor:
             6: 'htthree',   # Cuckoo
             7: 'htfour',    # Iceberg
             15: 'htfive',   # Junction
+            24: 'htsix',    # Baseline
             17: 'htone',    # TPHT
             20: 'httwo'     # Blast
         }
@@ -113,7 +114,7 @@ class DataProcessor:
         
         # === Speedup calculations ===
         # Find fastest baseline for comparison (excluding httwo and htone)
-        baseline_objects = [6, 7, 15]  # Cuckoo, Iceberg, Junction
+        baseline_objects = [6, 7, 15, 24]  # Cuckoo, Iceberg, Junction, htsix
         
         # Fill throughput comparison - use raw values
         baseline_fill_max_raw = df_filtered[(df_filtered['object_id'].isin(baseline_objects)) & 
@@ -210,11 +211,12 @@ class DataProcessor:
             6: 'htthree',   # Cuckoo
             7: 'htfour',    # Iceberg
             15: 'htfive',   # Junction
+            24: 'htsix',    # Baseline
             17: 'htone',    # TPHT
             23: 'httwo'     # Blast
         }
 
-        baseline_objects = [6, 7, 15]  # Cuckoo, Iceberg, Junction
+        baseline_objects = [6, 7, 15, 24]  # Cuckoo, Iceberg, Junction, htsix
 
         htone_space_eff_percent = 0
         httwo_space_eff_percent = 0
@@ -330,17 +332,37 @@ class DataProcessor:
         """
         Calculate occupancy analysis metrics for the prob_analysis.tex section.
         
-        Uses: occupancy_experimental_box.csv
+        Uses: occupancy_experimental_box_random.csv (or other variants)
         Calculates: Percentages for empty bins, bins with one key, and whisker variance
         """
-        df = self.get_dataframe('occupancy_experimental_box')
+        # Try to get the random variant first, fall back to others if not available
+        df = None
+        variants = ['occupancy_experimental_box_random', 'occupancy_experimental_box_low_hamming', 
+                   'occupancy_experimental_box_high_hamming', 'occupancy_experimental_box_sequential']
+        
+        for variant in variants:
+            try:
+                df = self.get_dataframe(variant)
+                print(f"Using occupancy data from: {variant}")
+                break
+            except ValueError:
+                continue
+        
+        if df is None:
+            # Try the old naming convention as fallback
+            try:
+                df = self.get_dataframe('occupancy_experimental_box')
+                print("Using occupancy data from: occupancy_experimental_box")
+            except ValueError:
+                available = ', '.join(self.dataframes.keys())
+                raise ValueError(f"No occupancy experimental box data found. Available dataframes: {available}")
         
         # Get data for occupancy 0 (empty bins) and occupancy 1 (bins with one key)
         empty_bins_data = df[df['occupancy'] == 0]
         one_key_bins_data = df[df['occupancy'] == 1]
         
         if not empty_bins_data.empty and not one_key_bins_data.empty:
-            # Convert to percentages and round to 1 decimal place
+            # Convert to percentages and round to 2 decimal places
             empty_bins_percent = empty_bins_data['median'].iloc[0] * 100
             one_key_bins_percent = one_key_bins_data['median'].iloc[0] * 100
             
@@ -353,23 +375,33 @@ class DataProcessor:
             empty_upper_whisker = empty_bins_data['upper_whisker'].iloc[0]
             empty_lower_whisker = empty_bins_data['lower_whisker'].iloc[0]
             
-            empty_upper_diff_percent = abs((empty_upper_whisker - empty_median) / empty_median) * 100
-            empty_lower_diff_percent = abs((empty_lower_whisker - empty_median) / empty_median) * 100
-            empty_max_whisker_diff = max(empty_upper_diff_percent, empty_lower_diff_percent)
+            # Handle case where median might be very small (avoid division by very small numbers)
+            if empty_median > 1e-10:  # Only calculate if median is not essentially zero
+                empty_upper_diff_percent = abs((empty_upper_whisker - empty_median) / empty_median) * 100
+                empty_lower_diff_percent = abs((empty_lower_whisker - empty_median) / empty_median) * 100
+                empty_max_whisker_diff = max(empty_upper_diff_percent, empty_lower_diff_percent)
+            else:
+                empty_max_whisker_diff = 0.0
             
             # For bins with one key (occupancy = 1)
             one_median = one_key_bins_data['median'].iloc[0]
             one_upper_whisker = one_key_bins_data['upper_whisker'].iloc[0]
             one_lower_whisker = one_key_bins_data['lower_whisker'].iloc[0]
             
-            one_upper_diff_percent = abs((one_upper_whisker - one_median) / one_median) * 100
-            one_lower_diff_percent = abs((one_lower_whisker - one_median) / one_median) * 100
-            one_max_whisker_diff = max(one_upper_diff_percent, one_lower_diff_percent)
+            # Handle case where median might be very small
+            if one_median > 1e-10:  # Only calculate if median is not essentially zero
+                one_upper_diff_percent = abs((one_upper_whisker - one_median) / one_median) * 100
+                one_lower_diff_percent = abs((one_lower_whisker - one_median) / one_median) * 100
+                one_max_whisker_diff = max(one_upper_diff_percent, one_lower_diff_percent)
+            else:
+                one_max_whisker_diff = 0.0
             
             # Take the maximum whisker difference across both occupancy levels
             max_whisker_diff = max(empty_max_whisker_diff, one_max_whisker_diff)
             
             self.add_result("max_whisker_diff_percent", round(max_whisker_diff, 3))
+        else:
+            print("Warning: Could not find data for occupancy 0 or 1 in the dataset")
     
     def calculate_tpht_thread_scaling_factor(self):
         df = self.get_dataframe('scaling_results')
@@ -537,7 +569,7 @@ class DataProcessor:
         max_latency_data = df[(df['operation_type'] == 0) & (df['percentile'] == 100.0)]
         
         # Object ID mappings
-        baseline_objects = [6, 7, 15]  # htthree, htfour, htfive
+        baseline_objects = [6, 7, 15, 24]  # htthree, htfour, htfive, htsix
         httwo_object_id = 21
         
         # Get httwo maximum latency
@@ -589,6 +621,7 @@ class DataProcessor:
             6: 'htthree',   # Cuckoo
             7: 'htfour',    # Iceberg  
             15: 'htfive',   # Junction
+            24: 'htsix',    # Baseline
             18: 'htone',    # TPHT (object_id=18 in resizing experiments)
             21: 'httwo'     # Blast (object_id=21 in resizing experiments)
         }
