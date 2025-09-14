@@ -88,7 +88,7 @@ class DataProcessor:
             20: 'httwo'     # Blast
         }
         
-        # === \httwo (Blast, object_id=20) metrics ===
+        # === \httwo  (Blast, object_id=20) metrics ===
         httwo_data = df_filtered[df_filtered['object_id'] == 20]
         
         # Average fill throughput for Load phase (case_id=17) - keep raw values
@@ -100,7 +100,7 @@ class DataProcessor:
         httwo_avg_run_raw = httwo_run_throughputs_raw.mean()
         self.add_result("httwo_avg_run_throughput", round(httwo_avg_run_raw / 1_000_000, 1))
         
-        # === \htone (TPHT, object_id=17) metrics ===
+        # === \htone  (TPHT, object_id=17) metrics ===
         htone_data = df_filtered[df_filtered['object_id'] == 17]
         
         # Average fill throughput for Load phase - keep raw values
@@ -596,6 +596,7 @@ class DataProcessor:
         
         # Calculate percentage reduction
         if fastest_baseline_latency > 0:
+            print(f"Fastest baseline latency: {fastest_baseline_latency}, httwo max latency: {httwo_max_latency}")
             latency_reduction_percent = ((fastest_baseline_latency - httwo_max_latency) / fastest_baseline_latency) * 100
             self.add_result("httwo_latency_shave_percent", round(latency_reduction_percent, 1))
         else:
