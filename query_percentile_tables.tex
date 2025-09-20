@@ -1,0 +1,138 @@
+% Query Percentile Tables for Different Load Factors
+% This file contains tables showing query latency percentiles at different load factors
+
+% Table for Load Factor 0.7
+\begin{table*}[h!]
+    \centering
+    \footnotesize
+    \caption{Query Latency Percentiles at Load Factor 0.7}
+    \label{tab:query_percentiles_0.7}
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{|c|cccccc|}
+        \toprule
+        Percentile & \htthree & \htfour & \htfive & \htsix & \htone & \httwo \\
+        \midrule
+        $50.0\%$ & 155ns & 200ns & 113ns & 359ns & 206ns & 118ns \\
+        $95.0\%$ & 328ns & 340ns & 224ns & 708ns & 458ns & 233ns \\
+        $99.0\%$ & 519ns & 563ns & 465ns & 921ns & 645ns & 470ns \\
+        $99.9\%$ & 626ns & 713ns & 588ns & 1220ns & 888ns & 593ns \\
+        $99.99\%$ & 822ns & 984ns & 726ns & 2812ns & 1193ns & 775ns \\
+        max & 23.0$\mu$s & 22.7$\mu$s & 30.4$\mu$s & 31.2$\mu$s & 28.5$\mu$s & 25.3$\mu$s \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table*}
+
+% Table for Load Factor 0.8
+\begin{table*}[h!]
+    \centering
+    \footnotesize
+    \caption{Query Latency Percentiles at Load Factor 0.8}
+    \label{tab:query_percentiles_0.8}
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{|c|cccccc|}
+        \toprule
+        Percentile & \htthree & \htfour & \htfive & \htsix & \htone & \httwo \\
+        \midrule
+        $50.0\%$ & 136ns & 200ns & 115ns & 376ns & 208ns & 125ns \\
+        $95.0\%$ & 310ns & 352ns & 233ns & 730ns & 472ns & 276ns \\
+        $99.0\%$ & 503ns & 569ns & 474ns & 952ns & 660ns & 490ns \\
+        $99.9\%$ & 569ns & 725ns & 607ns & 1259ns & 914ns & 631ns \\
+        $99.99\%$ & 701ns & 994ns & 806ns & 2883ns & 1217ns & 872ns \\
+        max & 12.5$\mu$s & 82.1$\mu$s & 83.9$\mu$s & 31.2$\mu$s & 28.5$\mu$s & 26.0$\mu$s \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table*}
+
+% Table for Load Factor 0.9
+\begin{table*}[h!]
+    \centering
+    \footnotesize
+    \caption{Query Latency Percentiles at Load Factor 0.9}
+    \label{tab:query_percentiles_0.9}
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{|c|cccccc|}
+        \toprule
+        Percentile & \htthree & \htfour & \htfive & \htsix & \htone & \httwo \\
+        \midrule
+        $50.0\%$ & 144ns & 201ns & 117ns & 387ns & 213ns & 126ns \\
+        $95.0\%$ & 322ns & 363ns & 277ns & 753ns & 493ns & 287ns \\
+        $99.0\%$ & 511ns & 572ns & 502ns & 981ns & 681ns & 501ns \\
+        $99.9\%$ & 592ns & 736ns & 739ns & 1295ns & 942ns & 646ns \\
+        $99.99\%$ & 759ns & 1003ns & 1295ns & 2893ns & 1258ns & 908ns \\
+        max & 16.2$\mu$s & 17.8$\mu$s & 77.1$\mu$s & 26.4$\mu$s & 15.1$\mu$s & 27.8$\mu$s \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table*}
+
+% Table for Load Factor 0.95
+\begin{table*}[h!]
+    \centering
+    \footnotesize
+    \caption{Query Latency Percentiles at Load Factor 0.95}
+    \label{tab:query_percentiles_0.95}
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{|c|cccccc|}
+        \toprule
+        Percentile & \htthree & \htfour & \htfive & \htsix & \htone & \httwo \\
+        \midrule
+        $50.0\%$ & 144ns & 201ns & 118ns & 390ns & 216ns & 122ns \\
+        $95.0\%$ & 324ns & 365ns & 325ns & 761ns & 503ns & 250ns \\
+        $99.0\%$ & 513ns & 572ns & 579ns & 993ns & 691ns & 495ns \\
+        $99.9\%$ & 599ns & 736ns & 1446ns & 1309ns & 958ns & 630ns \\
+        $99.99\%$ & 777ns & 1005ns & 2866ns & 2913ns & 1282ns & 894ns \\
+        max & 34.3$\mu$s & 24.4$\mu$s & 54.4$\mu$s & 17.2$\mu$s & 40.5$\mu$s & 83.3$\mu$s \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table*}
+
+% Summary table showing performance degradation with load factor
+\begin{table*}[h!]
+    \centering
+    \footnotesize
+    \caption{Query Performance Summary Across Load Factors (50th Percentile Latency)}
+    \label{tab:query_performance_summary}
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{|c|cccccc|}
+        \toprule
+        Load Factor & \htthree & \htfour & \htfive & \htsix & \htone & \httwo \\
+        \midrule
+        $0.7$ & 155ns & 200ns & 113ns & 359ns & 206ns & 118ns \\
+        $0.8$ & 136ns & 200ns & 115ns & 376ns & 208ns & 125ns \\
+        $0.9$ & 144ns & 201ns & 117ns & 387ns & 213ns & 126ns \\
+        $0.95$ & 144ns & 201ns & 118ns & 390ns & 216ns & 122ns \\
+        \midrule
+        \multicolumn{7}{c|}{Latency Change from 0.7 to 0.95} \\
+        \midrule
+        $\Delta$ & -7.1\% & +0.5\% & +4.4\% & +8.6\% & +4.9\% & +3.4\% \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table*}
+
+% Table showing 99.9th percentile performance degradation
+\begin{table*}[h!]
+    \centering
+    \footnotesize
+    \caption{Query Performance at 99.9th Percentile Across Load Factors}
+    \label{tab:query_performance_99.9}
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{|c|cccccc|}
+        \toprule
+        Load Factor & \htthree & \htfour & \htfive & \htsix & \htone & \httwo \\
+        \midrule
+        $0.7$ & 626ns & 713ns & 588ns & 1220ns & 888ns & 593ns \\
+        $0.8$ & 569ns & 725ns & 607ns & 1259ns & 914ns & 631ns \\
+        $0.9$ & 592ns & 736ns & 739ns & 1295ns & 942ns & 646ns \\
+        $0.95$ & 599ns & 736ns & 1446ns & 1309ns & 958ns & 630ns \\
+        \midrule
+        \multicolumn{7}{c|}{Latency Change from 0.7 to 0.95} \\
+        \midrule
+        $\Delta$ & -4.3\% & +3.2\% & +146\% & +7.3\% & +7.9\% & +6.2\% \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table*}
