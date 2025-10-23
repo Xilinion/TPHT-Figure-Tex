@@ -1,14 +1,12 @@
 % Mem growth plot: reads csv/mem_growth.csv and plots normalized time vs memory
 \begin{figure}[h]
     \centering
-    % Ensure the CSV path matches scripts/to_csv.sh output
-    \pgfplotstableread[col sep=comma]{csv/mem_growth.csv}{\memgrowth}
 
     \begin{tikzpicture}
     \begin{axis}[
         width=8.5cm,
-        height=6.0cm,
-        xlabel={Normalized Time},
+        height=4.0cm,
+        xlabel={Normalized Elapsed Time},
         ylabel={Memory Usage (MB)},
         xmin=0, xmax=1,
         grid=both,
@@ -23,32 +21,32 @@
     
     % Object 6 = Cuckoo (htthree)
     \addplot[CuckooLineStyle, mark=none]
-        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{6:6}] {\memgrowth};
+        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{6:6}] {\memgrowthdata};
     \addlegendentry{\htthree}
 
     % Object 7 = IcebergHT (htfour)
     \addplot[IcebergLineStyle, mark=none]
-        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{7:7}] {\memgrowth};
+        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{7:7}] {\memgrowthdata};
     \addlegendentry{\htfour}
 
     % Object 15 = Junction (htfive)
     \addplot[JunctionLineStyle, mark=none]
-        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{15:15}] {\memgrowth};
+        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{15:15}] {\memgrowthdata};
     \addlegendentry{\htfive}
 
     % Object 24 = TBB (htsix)
     \addplot[TBBLineStyle, mark=none]
-        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{24:24}] {\memgrowth};
+        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{24:24}] {\memgrowthdata};
     \addlegendentry{\htsix}
 
     % Object 18 = Chained-TPHT (htone)
     \addplot[TPHTLineStyle, mark=none]
-        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{18:18}] {\memgrowth};
+        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{18:18}] {\memgrowthdata};
     \addlegendentry{\htone}
 
     % Object 21 = Flattened-TPHT (httwo)
     \addplot[BlastLineStyle, mark=none]
-        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{21:21}] {\memgrowth};
+        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{21:21}] {\memgrowthdata};
     \addlegendentry{\httwo}
 
     \end{axis}
