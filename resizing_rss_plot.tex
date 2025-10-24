@@ -1,13 +1,13 @@
-% Resizing RSS plot: reads csv/resizing_rss.csv and plots normalized time vs memory
+% Resizing RSS plot: reads csv/resizing_rss.csv and plots completion vs memory
 \begin{figure}[h]
     \centering
     \begin{tikzpicture}
     \begin{axis}[
         width=8.5cm,
         height=4.0cm,
-        xlabel={Normalized Completion Percentage},
+        xlabel={Completion Percentage},
         ylabel={Memory Usage (MB)},
-        xmin=0, xmax=1,
+        xmin=0, xmax=100,
         grid=both,
         grid style={gray!30},
         legend style={draw=none, at={(0.5,1.02)}, anchor=south, legend columns=3, legend cell align=left},
@@ -20,37 +20,37 @@
     
     % Object 6 = Cuckoo (htthree)
     \addplot[CuckooLineStyle, mark=none]
-        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{6:6}] {\resizingrssdata};
+        table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{6:6}] {\resizingrssdata};
     \addlegendentry{\htthree}
 
     % Object 7 = IcebergHT (htfour)
     \addplot[IcebergLineStyle, mark=none]
-        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{7:7}] {\resizingrssdata};
+        table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{7:7}] {\resizingrssdata};
     \addlegendentry{\htfour}
 
     % Object 15 = Junction (htfive)
     \addplot[JunctionLineStyle, mark=none]
-        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{15:15}] {\resizingrssdata};
+        table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{15:15}] {\resizingrssdata};
     \addlegendentry{\htfive}
 
     % Object 24 = TBB (htsix)
     \addplot[TBBLineStyle, mark=none]
-        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{24:24}] {\resizingrssdata};
+        table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{24:24}] {\resizingrssdata};
     \addlegendentry{\htsix}
 
     % Object 18 = Chained-TPHT (htone)
     \addplot[TPHTLineStyle, mark=none]
-        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{18:18}] {\resizingrssdata};
+        table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{18:18}] {\resizingrssdata};
     \addlegendentry{\htone}
 
     % Object 21 = Flattened-TPHT (httwo)
     \addplot[BlastLineStyle, mark=none]
-        table[x=normalized_time, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{21:21}] {\resizingrssdata};
+        table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{21:21}] {\resizingrssdata};
     \addlegendentry{\httwo}
 
     \end{axis}
     \end{tikzpicture}
 
-    \caption{Memory usage during resizing operations over normalized number of operations.}
+    \caption{Memory usage during resizing operations over completion percentage.}
     \label{fig:resizing_rss_plot}
 \end{figure}
