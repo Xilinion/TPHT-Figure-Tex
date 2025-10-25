@@ -666,6 +666,55 @@ class DataProcessor:
         htfour_throughput_decrease_percent = ((htfour_no_resizing_combined_avg - htfour_resizing_combined_avg) / htfour_no_resizing_combined_avg) * 100
         self.add_result("htfour_resizing_throughput_decrease_percent", round(htfour_throughput_decrease_percent, 1))
     
+    def calculate_resizing_space_efficiency_metrics(self):
+        """
+        Calculate worst-case space efficiency metrics for resizing RSS experiment.
+        
+        Uses: resizing_rss.csv
+        Calculates: Worst space efficiency for each method (object_id) using formula:
+        space_efficiency = 80530636 * 16 * completion / memory_mb / 100 / 2^20
+        Only considers points with completion > 25
+        """
+        df = self.get_dataframe('resizing_rss')
+        
+        # Object ID to macro mapping (based on the existing mappings in the file)
+        object_to_macro = {
+            6: 'htthree',   # Cuckoo
+            7: 'htfour',    # Iceberg
+            15: 'htfive',   # Junction
+            18: 'htone',    # TPHT
+            21: 'httwo',    # Blast
+            24: 'htsix'     # Baseline
+        }
+        
+        # Filter for completion > 25
+        df_filtered = df[df['completion'] > 25].copy()
+        
+        if df_filtered.empty:
+            print("Warning: No data points with completion > 25 found")
+            return
+        
+        # Calculate space efficiency for each row
+        # Formula: 80530636 * 16 * completion / memory_mb / 100 / 2^20
+        df_filtered['space_efficiency'] = (80530636 * 16 * df_filtered['completion'] / 
+                                      df_filtered['memory_mb'] / 100 / (2**20))
+        
+        # Find worst (minimum) space efficiency for each object_id
+        for obj_id, macro in object_to_macro.items():
+            obj_data = df_filtered[df_filtered['object_id'] == obj_id]
+            
+            if not obj_data.empty:
+                worst_space_efficiency = obj_data['space_efficiency'].min()
+                # Convert to percentage
+                worst_space_efficiency_percent = worst_space_efficiency * 100
+                
+                self.add_result(f"{macro}_worst_resizing_space_efficiency_percent", 
+                              round(worst_space_efficiency_percent, 1))
+                
+                print(f"{macro} (object_id={obj_id}): worst space efficiency = {worst_space_efficiency_percent:.1f}%")
+            else:
+                print(f"Warning: No data found for {macro} (object_id={obj_id}) with completion > 25")
+    
     # ==========================================================================
     # ADD YOUR CALCULATION FUNCTIONS HERE
     # ==========================================================================
@@ -701,6 +750,7 @@ class DataProcessor:
         self.calculate_inmem_performance_degradation()
         self.calculate_latency_shaving_metrics()
         self.calculate_resizing_metrics()
+        self.calculate_resizing_space_efficiency_metrics()
         # Add calls to your new functions here:
         # self.your_new_function()
         
