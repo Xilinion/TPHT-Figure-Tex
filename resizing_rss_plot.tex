@@ -19,32 +19,32 @@
     % Each line filters rows by object_id and plots as a line
     
     % Object 6 = Cuckoo (htthree)
-    \addplot[CuckooLineStyle, mark=none]
+    \addplot[CuckooLineStyle, mark=none, sharp plot]
         table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{6:6}] {\resizingrssdata};
     \addlegendentry{\htthree}
 
     % Object 7 = IcebergHT (htfour)
-    \addplot[IcebergLineStyle, mark=none]
+    \addplot[IcebergLineStyle, mark=none, sharp plot]
         table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{7:7}] {\resizingrssdata};
     \addlegendentry{\htfour}
 
     % Object 15 = Junction (htfive)
-    \addplot[JunctionLineStyle, mark=none]
+    \addplot[JunctionLineStyle, mark=none, sharp plot]
         table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{15:15}] {\resizingrssdata};
     \addlegendentry{\htfive}
 
     % Object 24 = TBB (htsix)
-    \addplot[TBBLineStyle, mark=none]
+    \addplot[TBBLineStyle, mark=none, sharp plot]
         table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{24:24}] {\resizingrssdata};
     \addlegendentry{\htsix}
 
     % Object 18 = Chained-TPHT (htone)
-    \addplot[TPHTLineStyle, mark=none]
+    \addplot[TPHTLineStyle, mark=none, sharp plot]
         table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{18:18}] {\resizingrssdata};
     \addlegendentry{\htone}
 
     % Object 21 = Flattened-TPHT (httwo)
-    \addplot[BlastLineStyle, mark=none]
+    \addplot[BlastLineStyle, mark=none, sharp plot]
         table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{21:21}] {\resizingrssdata};
     \addlegendentry{\httwo}
 
