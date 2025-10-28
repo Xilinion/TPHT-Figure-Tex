@@ -736,7 +736,8 @@ class DataProcessor:
             15: 'htfive',   # Junction
             18: 'htone',    # TPHT
             21: 'httwo',    # Blast
-            24: 'htsix'     # Baseline
+            24: 'htsix',     # Baseline
+            25: 'htseven',     # Stagger ByteArray Chained HT
         }
         
         # Filter for completion > 25
