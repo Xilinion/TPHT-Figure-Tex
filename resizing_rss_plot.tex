@@ -48,9 +48,13 @@
         table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{21:21}] {\resizingrssdata};
     \addlegendentry{\httwo}
 
+    % Object 25 = Stagger ByteArray Chained HT (htseven)
+    \addplot[TPHTLineStyle, mark=none, sharp plot, dashed]
+        table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{25:25}] {\resizingrssdata};
+
     \end{axis}
     \end{tikzpicture}
 
-    \caption{Memory usage during resizing operations over completion percentage.}
+    \caption{Memory usage during resizing operations over completion percentage. The dashed line corresponds to \htone with staggering enabled.}
     \label{fig:resizing_rss_plot}
 \end{figure}
