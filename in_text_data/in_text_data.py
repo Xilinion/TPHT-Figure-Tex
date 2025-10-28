@@ -301,6 +301,58 @@ class DataProcessor:
         
         throughput_ratio = htfive_low_throughput / httwo_low_throughput
         self.add_result("htfive_over_httwo_low_load_ratio", round(throughput_ratio, 1))
+
+        # === httwo performance ratios at 50% and 70% space efficiency ===
+        # Calculate for each case_id (positive query = case_id 9, insertion = case_id 1, negative query = case_id 10)
+        case_ids = {
+            'insertion': 1,
+            'positive_query': 9,
+            'negative_query': 10
+        }
+
+        for case_name, case_id in case_ids.items():
+            # Get data for this case
+            case_data = df[df['case_id'] == case_id]
+            
+            if not case_data.empty:
+                # Find first data point at or above 0.50 and 0.70 space efficiency for each object
+                space_eff_thresholds = [0.50, 0.70]
+                results_by_threshold = {}
+                
+                for threshold in space_eff_thresholds:
+                    results_by_threshold[threshold] = {}
+                    
+                    for obj_id in [6, 7, 15, 23, 24]:  # Include httwo (23) and all baselines
+                        obj_case_data = case_data[case_data['object_id'] == obj_id].copy()
+                        obj_case_data = obj_case_data.sort_values('space_efficiency')
+                        
+                        # Find first point at or above threshold
+                        point = obj_case_data[obj_case_data['space_efficiency'] >= threshold]
+                        if not point.empty:
+                            results_by_threshold[threshold][obj_id] = {
+                                'throughput': point.iloc[0]['throughput_millions'],
+                                'space_eff': point.iloc[0]['space_efficiency']
+                            }
+                
+                # Calculate ratios at 0.50
+                if 0.50 in results_by_threshold and 23 in results_by_threshold[0.50]:
+                    httwo_throughput_50 = results_by_threshold[0.50][23]['throughput']
+                    baseline_objects = [obj_id for obj_id in [6, 7, 15, 24] if obj_id in results_by_threshold[0.50]]
+                    
+                    if baseline_objects:
+                        baseline_throughputs = [results_by_threshold[0.50][obj_id]['throughput'] for obj_id in baseline_objects]
+                        best_baseline_50 = max(baseline_throughputs)
+                        ratio_50 = httwo_throughput_50 / best_baseline_50
+                        
+                        # Data 1: Percentage of fastest baseline (e.g., 0.9 -> 90%, 1.1 -> 110%)
+                        ratio_50_percent = ratio_50 * 100
+                        self.add_result(f"httwo_{case_name}_percent_of_fastest_50pct", round(ratio_50_percent, 1))
+                        
+                        # Data 2: Speed increase/decrease percent compared to fastest baseline
+                        # If ratio is 1.1, it means httwo is 10% faster. If 0.9, it's 10% slower.
+                        speed_diff_percent = abs((ratio_50 - 1) * 100)
+                        self.add_result(f"httwo_{case_name}_speed_diff_50pct", round(speed_diff_percent, 1))
+                    
     
     def calculate_load_factor_metrics(self):
         """
