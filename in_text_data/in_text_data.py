@@ -203,6 +203,24 @@ class DataProcessor:
         junction_c_over_load_speedup = junction_run_c_raw / junction_load_fill_raw
         self.add_result("htfive_run_c_over_load_speedup", round(junction_c_over_load_speedup, 1))
         
+        # === htfour vs htthree run phase comparison ===
+        # Compare htfour (object_id=7) run phase throughput to htthree (object_id=6)
+        htfour_data = df_filtered[df_filtered['object_id'] == 7]
+        htfour_run_throughputs_raw = htfour_data[htfour_data['case_id'].isin([17, 18, 19, 20, 21, 22])]['run_throughput (ops/s)']
+        htfour_avg_run_raw = htfour_run_throughputs_raw.mean()
+        
+        htthree_data = df_filtered[df_filtered['object_id'] == 6]
+        htthree_run_throughputs_raw = htthree_data[htthree_data['case_id'].isin([17, 18, 19, 20, 21, 22])]['run_throughput (ops/s)']
+        htthree_avg_run_raw = htthree_run_throughputs_raw.mean()
+        
+        htfour_over_htthree_ratio = htfour_avg_run_raw / htthree_avg_run_raw - 1
+        self.add_result("htfour_over_htthree_run_throughput_percent", round(htfour_over_htthree_ratio * 100, 1))
+        
+        # === htfive Run C throughput ===
+        htfive_data = df_filtered[df_filtered['object_id'] == 15]
+        htfive_run_c_raw = htfive_data[htfive_data['case_id'] == 19]['run_throughput (ops/s)'].values[0]
+        self.add_result("htfive_run_c_throughput", round(htfive_run_c_raw / 1_000_000, 1))
+        
         # === htfour workload variance analysis ===
         # Calculate coefficient of variation (CV) for htfour across all run workloads
         htfour_data = df_filtered[df_filtered['object_id'] == 7]
