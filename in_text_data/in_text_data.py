@@ -750,6 +750,18 @@ class DataProcessor:
         # Calculate percentage decrease
         htfour_throughput_decrease_percent = ((htfour_no_resizing_combined_avg - htfour_resizing_combined_avg) / htfour_no_resizing_combined_avg) * 100
         self.add_result("htfour_resizing_throughput_decrease_percent", round(htfour_throughput_decrease_percent, 1))
+        
+        # === httwo resizing fill phase decrease ===
+        # Compare httwo fill throughput with vs without resizing
+        httwo_no_resizing_data = df_no_resizing[df_no_resizing['object_id'] == 20]
+        httwo_no_resizing_fill_raw = httwo_no_resizing_data[httwo_no_resizing_data['case_id'] == 17]['fill_throughput (ops/s)'].values[0]
+        
+        httwo_resizing_data = df_resizing[df_resizing['object_id'] == 21]  # note: httwo is object_id=21 in resizing
+        httwo_resizing_fill_raw = httwo_resizing_data[httwo_resizing_data['case_id'] == 17]['fill_throughput (ops/s)'].values[0]
+        
+        # Calculate percentage decrease
+        httwo_fill_decrease_percent = ((httwo_no_resizing_fill_raw - httwo_resizing_fill_raw) / httwo_no_resizing_fill_raw) * 100
+        self.add_result("httwo_resizing_fill_throughput_decrease_percent", round(httwo_fill_decrease_percent, 1))
     
     def calculate_resizing_space_efficiency_metrics(self):
         """
