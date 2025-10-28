@@ -112,9 +112,24 @@ class DataProcessor:
         htone_avg_run_raw = htone_run_throughputs_raw.mean()
         self.add_result("htone_avg_run_throughput", round(htone_avg_run_raw / 1_000_000, 1))
         
-        # === Speedup calculations ===
-        # Find fastest baseline for comparison (excluding httwo and htone)
+        # === Baseline methods metrics (htthree, htfour, htfive, htsix) ===
         baseline_objects = [6, 7, 15, 24]  # Cuckoo, Iceberg, Junction, htsix
+        
+        for obj_id in baseline_objects:
+            baseline_data = df_filtered[df_filtered['object_id'] == obj_id]
+            macro = object_to_macro[obj_id]
+            
+            # Average fill throughput for Load phase (case_id=17)
+            baseline_load_fill_raw = baseline_data[baseline_data['case_id'] == 17]['fill_throughput (ops/s)'].values[0]
+            self.add_result(f"{macro}_avg_fill_throughput", round(baseline_load_fill_raw / 1_000_000, 1))
+            
+            # Average run throughput across all run phases (case_ids 17-22)
+            baseline_run_throughputs_raw = baseline_data[baseline_data['case_id'].isin([17, 18, 19, 20, 21, 22])]['run_throughput (ops/s)']
+            baseline_avg_run_raw = baseline_run_throughputs_raw.mean()
+            self.add_result(f"{macro}_avg_run_throughput", round(baseline_avg_run_raw / 1_000_000, 1))
+        
+        # === Speedup calculations ===
+        # Find fastest baseline for comparison (baseline_objects already defined above)
         
         # Fill throughput comparison - use raw values
         baseline_fill_max_raw = df_filtered[(df_filtered['object_id'].isin(baseline_objects)) & 
