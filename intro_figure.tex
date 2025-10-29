@@ -35,9 +35,9 @@
 
 \begin{figure}[h]
     \centering
-    
+
     \pgfplotslegendfromname{intro-legend-horizontal}
-    
+
     % Subfigure (a): Throughput comparison (Load vs Run)
     \begin{subfigure}[t]{0.56\linewidth}
     \centering
@@ -73,14 +73,13 @@
     ]
     \addAllIntroLoadPlots
     \addAllIntroRunPlots
-    
+
     % Add group labels
     \node at (axis cs:-3,375) {\text{Load}};
     \node at (axis cs:10.7,375) {\text{Run}};
     \end{axis}
     \end{tikzpicture}
-    \caption{Throughput comparison on YCSB load and run phases.}
-    \label{fig:intro_throughput}
+    \caption{Throughput comparison on YCSB load and run phases.}\label{fig:intro_throughput}
     \end{subfigure}%
     \hfill
     % Subfigure (b): Space efficiency comparison
@@ -111,21 +110,19 @@
         xmin=-3,
         xmax=3
     ]
-    
+
     % Space efficiency data (from max_space_efficiency.csv)
     \addAllSpaceEffPlots
-    
+
     % Add invisible plot to extract the value for HTONE and display it
-    \addplot[draw=none, fill=none, nodes near coords, point meta=explicit, 
-             nodes near coords style={font=\footnotesize}] 
-    table[x expr=-1, y expr=\thisrowno{1}*100-5, meta expr=\thisrowno{1}*100, 
+    \addplot[draw=none, fill=none, nodes near coords, point meta=explicit,
+             nodes near coords style={font=\footnotesize}]
+    table[x expr=-1, y expr=\thisrowno{1}*100-5, meta expr=\thisrowno{1}*100,
           restrict expr to domain={\thisrow{object_id}}{17:17}] {\maxspaceeffdata};
-    
+
     \end{axis}
     \end{tikzpicture}
-    \caption{Maximum space efficiency achieved in practice.}
-    \label{fig:intro_space_efficiency}
+    \caption{Maximum space efficiency achieved in practice.}\label{fig:intro_space_efficiency}
     \end{subfigure}
-    \caption{Performance comparison of \htabbr and state-of-the-art hash tables.}
-    \label{fig:intro_figure}
+    \caption{Performance comparison of \htabbr and state-of-the-art hash tables.}\label{fig:intro_figure}
 \end{figure}
