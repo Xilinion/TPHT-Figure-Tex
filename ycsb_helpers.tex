@@ -39,6 +39,7 @@
         \ifnum#1=20 Run A$^-$\fi%
         \ifnum#1=21 Run B$^-$\fi%
         \ifnum#1=22 Run C$^-$\fi%
+        \ifnum#1=28 Run X\fi%
     \fi%
 }
 
@@ -89,11 +90,11 @@
 % #3 = throughput type (fill_throughput or run_throughput)
 % #4 = entry_id (0 or 1)
 \newcommand{\generateSubfigureNoYLabel}[4]{%
-\begin{subfigure}[b]{0.14\textwidth}
+\begin{subfigure}[b]{0.125\textwidth}
 \centering
 \begin{tikzpicture}
 \begin{axis}[
-    width=3cm,
+    width=2.8cm,
     height=3.8cm,
     xlabel={#2},
     ybar,
@@ -121,11 +122,11 @@
 % Function to generate a subfigure for resizing variants for 1x7 layout
 % Uses resizable variants: object 18 instead of 17, object 21 instead of 20
 \newcommand{\generateSubfigureResizing}[4]{%
-\begin{subfigure}[b]{0.14\textwidth}
+\begin{subfigure}[b]{0.125\textwidth}
 \centering
 \begin{tikzpicture}
 \begin{axis}[
-    width=3cm,
+    width=2.8cm,
     height=3.8cm,
     ylabel={Throughput (M/s)},
     ylabel style={at={(ticklabel* cs:1.02)}, anchor=south},
