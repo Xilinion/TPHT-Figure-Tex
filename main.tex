@@ -9,16 +9,21 @@
 \usepackage{multirow}
 \usepackage{pdflscape}
 \usepackage{booktabs}
+\usepackage{threeparttable}
 
 \pgfplotsset{compat=1.17}
 \usepgfplotslibrary{statistics}
 \usepgfplotslibrary{fillbetween}
 
+% table spacing helper used by percentile tables
+\newcommand{\tightsize}{\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.15}}
+
 % Include shared styles
 \input{styles}
 
 % Include YCSB helper functions
-\input{ycsb_helpers}
+\input{ycsb_standard_helpers}
+\input{ycsb_resizing_helpers}
 
 \begin{document}
 
