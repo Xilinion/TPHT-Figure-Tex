@@ -1,22 +1,47 @@
-\begin{table*}[h!]
-    \centering
-    \footnotesize
-    \caption{Latency Percentiles for Insertion and Positive Query Operations}\label{tab:latency_percentiles}
-    \resizebox{\linewidth}{!}{%
-    \begin{tabular}{|c|cccccc|cccccc|}
-        \toprule
-        & \multicolumn{6}{c|}{Insertion} & \multicolumn{6}{c|}{Positive Query} \\
-        \cmidrule(lr){2-7} \cmidrule(lr){8-13}
-        Percentile & \htthree & \htfour & \htfive & \htsix & \htone & \httwo & \htthree & \htfour & \htfive & \htsix & \htone & \httwo \\
-        \midrule
-        $50.0\%$ & 200ns & 215ns & 423ns & 1.4$\mu$s & 346ns & 165ns & 167ns & 231ns & 142ns & 878ns & 277ns & 150ns \\
-        $95.0\%$ & 989ns & 684ns & 37.0$\mu$s & 2.8$\mu$s & 606ns & 390ns & 384ns & 496ns & 717ns & 1.8$\mu$s & 545ns & 237ns \\
-        $99.0\%$ & 2.7$\mu$s & 1.4$\mu$s & 66.4$\mu$s & 3.7$\mu$s & 788ns & 541ns & 565ns & 650ns & 1.4$\mu$s & 2.4$\mu$s & 710ns & 497ns \\
-        $99.9\%$ & 7.7$\mu$s & 13.2$\mu$s & 113$\mu$s & 5.2$\mu$s & 1.0$\mu$s & 754ns & 712ns & 953ns & 2.3$\mu$s & 3.3$\mu$s & 966ns & 578ns \\
-        $99.99\%$ & 126$\mu$s & 15.4$\mu$s & 293$\mu$s & 7.6$\mu$s & 3.6$\mu$s & 1.1$\mu$s & 125$\mu$s & 3.5$\mu$s & 3.3$\mu$s & 4.8$\mu$s & 3.5$\mu$s & 704ns \\
-        max & 808ms & 233ms & 41.7ms & 282ms & 122ms & 94.7ms & 241ms & 74.0$\mu$s & 93.0$\mu$s & 284$\mu$s & 77.1$\mu$s & 84.1$\mu$s \\
-        \bottomrule
-    \end{tabular}%
-    }
+\begin{table*}[t]
+  \centering
+  \tightsize
+  \caption{Latency percentiles for insertion and positive query operations.}\label{tab:latency_percentiles}
+  \begin{threeparttable}
+  \footnotesize
+  \begin{tabular}{l *{6}{r} *{6}{r}}
+    \toprule
+    & \multicolumn{6}{c}{\textbf{Insertion}} & \multicolumn{6}{c}{\textbf{Positive Query}} \\
+    \cmidrule(lr){2-7}\cmidrule(lr){8-13}
+    \textbf{Percentile} & \htthree & \htfour & \htfive & \htsix & \htone & \httwo
+                        & \htthree & \htfour & \htfive & \htsix & \htone & \httwo \\
+    \midrule
+    \(50\%\)    & 200ns & 215ns & 423ns & 1.4$\mu$s & 346ns & 165ns & 167ns & 231ns & 142ns & 878ns & 277ns & 150ns \\
+    \(95\%\)    & 989ns & 684ns & 37.0$\mu$s & 2.8$\mu$s & 606ns & 390ns & 384ns & 496ns & 717ns & 1.8$\mu$s & 545ns & 237ns \\
+    \(99\%\)    & 2.7$\mu$s & 1.4$\mu$s & 66.4$\mu$s & 3.7$\mu$s & 788ns & 541ns & 565ns & 650ns & 1.4$\mu$s & 2.4$\mu$s & 710ns & 497ns \\
+    \(99.9\%\)  & 7.7$\mu$s & 13.2$\mu$s & 113$\mu$s & 5.2$\mu$s & 1.0$\mu$s & 754ns & 712ns & 953ns & 2.3$\mu$s & 3.3$\mu$s & 966ns & 578ns \\
+    \(99.99\%\) & 126$\mu$s & 15.4$\mu$s & 293$\mu$s & 7.6$\mu$s & 3.6$\mu$s & 1.1$\mu$s & 125$\mu$s & 3.5$\mu$s & 3.3$\mu$s & 4.8$\mu$s & 3.5$\mu$s & 704ns \\
+    max & 808ms & 233ms & 41.7ms & 282ms & 122ms & 94.7ms & 241ms & 74.0$\mu$s & 93.0$\mu$s & 284$\mu$s & 77.1$\mu$s & 84.1$\mu$s \\
+    \bottomrule
+  \end{tabular}
+  \end{threeparttable}
 \end{table*}
 
+%\begin{table*}[h!]
+%    \centering
+%    \footnotesize
+%    \caption{Latency Percentiles for Insertion and Positive Query Operations}\label{tab:latency_percentiles}
+%    \resizebox{\linewidth}{!}{%
+%    \begin{tabular}{|c|cccccc|cccccc|}
+%        \toprule
+%        & \multicolumn{6}{c|}{Insertion} & \multicolumn{6}{c|}{Positive Query} \\
+%        \cmidrule(lr){2-7} \cmidrule(lr){8-13}
+%        Percentile & \htthree & \htfour & \htfive & \htsix & \htone & \httwo & \htthree & \htfour & \htfive & \htsix & \htone & \httwo \\
+%        \midrule
+%        $50.0\%$ & 200ns & 215ns & 423ns & 1.4$\mu$s & 346ns & 165ns & 167ns & 231ns & 142ns & 878ns & 277ns & 150ns \\
+%        $95.0\%$ & 989ns & 684ns & 37.0$\mu$s & 2.8$\mu$s & 606ns & 390ns & 384ns & 496ns & 717ns & 1.8$\mu$s & 545ns & 237ns \\
+%        $99.0\%$ & 2.7$\mu$s & 1.4$\mu$s & 66.4$\mu$s & 3.7$\mu$s & 788ns & 541ns & 565ns & 650ns & 1.4$\mu$s & 2.4$\mu$s & 710ns & 497ns \\
+%        $99.9\%$ & 7.7$\mu$s & 13.2$\mu$s & 113$\mu$s & 5.2$\mu$s & 1.0$\mu$s & 754ns & 712ns & 953ns & 2.3$\mu$s & 3.3$\mu$s & 966ns & 578ns \\
+%        $99.99\%$ & 126$\mu$s & 15.4$\mu$s & 293$\mu$s & 7.6$\mu$s & 3.6$\mu$s & 1.1$\mu$s & 125$\mu$s & 3.5$\mu$s & 3.3$\mu$s & 4.8$\mu$s & 3.5$\mu$s & 704ns \\
+%        max & 808ms & 233ms & 41.7ms & 282ms & 122ms & 94.7ms & 241ms & 74.0$\mu$s & 93.0$\mu$s & 284$\mu$s & 77.1$\mu$s & 84.1$\mu$s \\
+%        \bottomrule
+%    \end{tabular}%
+%    }
+%\end{table*}
+%
+%
