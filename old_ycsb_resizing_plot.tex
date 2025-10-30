@@ -1,0 +1,107 @@
+% Function to add all 6 plots for resizing objects (6,7,15,18,21,24)
+% #1 = case_id, #2 = throughput type, #3 = entry_id
+% Note: Uses \addDataPlot from ycsb_standard_helpers.tex
+\newcommand{\addAllResizingPlots}[3]{%
+\addDataPlot{CuckooStyle}{6}{#2}{#1}{#3}
+\addDataPlot{IcebergStyle}{7}{#2}{#1}{#3}
+\addDataPlot{JunctionStyle}{15}{#2}{#1}{#3}
+\addDataPlot{TBBStyle}{24}{#2}{#1}{#3}
+\addDataPlot{TPHTStyle}{18}{#2}{#1}{#3}
+\addDataPlot{BlastStyle}{21}{#2}{#1}{#3}
+}
+
+% Function to generate a subfigure for resizing variants for 1x7 layout
+% Uses resizable variants: object 18 instead of 17, object 21 instead of 20
+\newcommand{\generateSubfigureResizing}[4]{%
+\begin{subfigure}[b]{0.2\linewidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=2.8cm,
+    height=3.8cm,
+    ylabel={Throughput (M/s)},
+    ylabel style={at={(ticklabel* cs:1.02)}, anchor=south},
+    xlabel={#2},
+    ybar,
+    bar width=3pt,
+    xticklabels={},
+    xtick style={draw=none},
+    axis lines=box,
+    tick align=inside,
+    scaled ticks=true,
+    tick label style={/pgf/number format/fixed,/pgf/number format/precision=1},
+    ymajorgrids=true,
+    yminorgrids=true,
+    minor tick num=1,
+    max space between ticks=35pt,
+    try min ticks=5,
+    grid style={gray!30},
+    ymin=0,
+    legend entries = {\htthree, \htfour, \htfive, \htsix, \htone, \httwo},
+    legend cell align = left,
+    legend style={draw=none, legend columns=3, /tikz/every even column/.append style={column sep=1cm}},
+    legend to name={throughput-legend-3column}
+]
+\addAllResizingPlots{#1}{#3}{#4}
+\end{axis}
+\end{tikzpicture}
+\end{subfigure}%
+}
+
+% Function to generate a subfigure for resizing variants without y-label for 1x7 layout
+% Uses resizable variants: object 18 instead of 17, object 21 instead of 20
+\newcommand{\generateSubfigureResizingNoYLabel}[4]{%
+\begin{subfigure}[b]{0.2\linewidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=2.8cm,
+    height=3.8cm,
+    xlabel={#2},
+    ybar,
+    bar width=3pt,
+    xticklabels={},
+    xtick style={draw=none},
+    axis lines=box,
+    tick align=inside,
+    scaled ticks=true,
+    tick label style={/pgf/number format/fixed,/pgf/number format/precision=1},
+    ymajorgrids=true,
+    yminorgrids=true,
+    minor tick num=1,
+    max space between ticks=35pt,
+    try min ticks=5,
+    grid style={gray!30},
+    ymin=0
+]
+\addAllResizingPlots{#1}{#3}{#4}
+\end{axis}
+\end{tikzpicture}
+\end{subfigure}%
+}
+
+% Legacy functions (kept for backward compatibility but updated for 1x7 layout)
+\newcommand{\generateFirstSubfigureResizing}[4]{%
+\generateSubfigureResizing{#1}{#2}{#3}{#4}%
+}
+
+\begin{figure}[h]
+    \centering
+    
+    % 3-column legend above the plots
+    \pgfplotslegendfromname{throughput-legend-3column}
+    
+    % Single row: Load, Run A, Run B, Run C, Run A^-, Run B^-, Run C^-
+    \generateSubfigureResizing{17}{Load}{fill_throughput}{1}%
+    \generateSubfigureResizingNoYLabel{17}{Run A}{run_throughput}{1}%
+    \generateSubfigureResizingNoYLabel{18}{Run B}{run_throughput}{1}%
+    \generateSubfigureResizingNoYLabel{19}{Run C}{run_throughput}{1}%
+    % \generateSubfigureResizingNoYLabel{20}{Run A$^-$}{run_throughput}{1}
+    %
+    % \generateSubfigureResizingNoYLabel{21}{Run B$^-$}{run_throughput}{1}
+    %
+    \generateSubfigureResizingNoYLabel{22}{Run C$^-$}{run_throughput}{1}
+
+    \caption{Performance of hash tables on YCSB workloads with 16 threads 
+    (resizing enabled).}\label{fig:throughput_subfigures_resizing}
+\end{figure} 

@@ -1,0 +1,36 @@
+\def\ShiftA{-4.0*\pgfplotbarwidth}
+\def\ShiftB{-2.4*\pgfplotbarwidth}
+\def\ShiftC{-0.8*\pgfplotbarwidth}
+\def\ShiftD{ 0.8*\pgfplotbarwidth}
+\def\ShiftE{ 2.4*\pgfplotbarwidth}
+\def\ShiftF{ 4.0*\pgfplotbarwidth}
+
+\newcommand{\addResizingPointPlot}[6]{%
+  \begingroup
+    \edef\YCOL{#4 (ops/s)}%
+    \addplot[#1, bar shift=#6] table[
+      x expr=#5,
+      y expr=\thisrow{\YCOL}/1e6,
+      restrict expr to domain={\thisrow{entry_id}}{1:1},
+      restrict expr to domain={\thisrow{object_id}}{#2:#2},
+      restrict expr to domain={\thisrow{case_id}}{#3:#3}
+    ]{\data};
+  \endgroup
+}
+
+\newcommand{\addOneXGroup}[3]{% #1=metric, #2=case_id, #3=xindex
+  \addResizingPointPlot{CuckooBarStyle}{6}{#2}{#1}{#3}{\ShiftA}%
+  \addResizingPointPlot{IcebergBarStyle}{7}{#2}{#1}{#3}{\ShiftB}%
+  \addResizingPointPlot{JunctionBarStyle}{15}{#2}{#1}{#3}{\ShiftC}%
+  \addResizingPointPlot{TBBBarStyle}{24}{#2}{#1}{#3}{\ShiftD}%
+  \addResizingPointPlot{TPHTBarStyle}{18}{#2}{#1}{#3}{\ShiftE}%
+  \addResizingPointPlot{BlastBarStyle}{21}{#2}{#1}{#3}{\ShiftF}%
+}
+
+\newcommand{\addResizingPlots}{%
+  \addOneXGroup{fill_throughput}{17}{0}% x=0
+  \addOneXGroup{run_throughput}{17}{1}% x=1
+  \addOneXGroup{run_throughput}{18}{2}% x=2
+  \addOneXGroup{run_throughput}{19}{3}% x=3
+  \addOneXGroup{run_throughput}{22}{4}% x=4
+}
