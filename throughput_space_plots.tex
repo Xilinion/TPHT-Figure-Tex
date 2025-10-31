@@ -91,45 +91,41 @@
 
 \begin{figure*}[h]
     \centering
-    \begin{minipage}{0.95\linewidth}
+    % Legend above figures in 1x5 layout
+    {\pgfplotslegendfromname{spaceeff-legend}}
+
+    % \vspace{0.5cm}
+
+    % Case 1 with legend definition and y-label
+    \begin{subfigure}[b]{0.35\textwidth}
         \centering
-
-        % Legend above figures in 1x5 layout
-        {\pgfplotslegendfromname{spaceeff-legend}}
-
-        % \vspace{0.5cm}
-
-        % Case 1 with legend definition and y-label
-        \begin{subfigure}[b]{0.35\textwidth}
-            \centering
-            \begin{tikzpicture}
-                \begin{axis}[spaceeff axis with ylabel, legend to name={spaceeff-legend}, legend entries={\htthree, \htfour, \htfive, \htsix, \htone, \httwo}, legend cell align=left, legend style={draw=none, legend columns=6, /tikz/every even column/.append style={column sep=0.5cm}}]
-                    \AddAllObjectPlotsForCase{1}
-                \end{axis}
-            \end{tikzpicture}
-            \caption{Insertion}\label{fig:throughput_space_efficiency/insertion}
-        \end{subfigure}%
-        % Case 9 (no y-label)
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \begin{tikzpicture}
-                \begin{axis}[spaceeff axis]
-                    \AddAllObjectPlotsForCase{9}
-                \end{axis}
-            \end{tikzpicture}
-            \caption{Positive Query}\label{fig:throughput_space_efficiency/positive_query}
-        \end{subfigure}%
-        % Case 10 (no y-label)
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \begin{tikzpicture}
-                \begin{axis}[spaceeff axis]
-                    \AddAllObjectPlotsForCase{10}
-                \end{axis}
-            \end{tikzpicture}
-            \caption{Negative Query}\label{fig:throughput_space_efficiency/negative_query}
-        \end{subfigure}
-    \end{minipage}
+        \begin{tikzpicture}
+            \begin{axis}[spaceeff axis with ylabel, legend to name={spaceeff-legend}, legend entries={\htthree, \htfour, \htfive, \htsix, \htone, \httwo}, legend cell align=left, legend style={draw=none, legend columns=6, /tikz/every even column/.append style={column sep=0.5cm}}]
+                \AddAllObjectPlotsForCase{1}
+            \end{axis}
+        \end{tikzpicture}
+        \caption{Insertion}\label{fig:throughput_space_efficiency/insertion}
+    \end{subfigure}%
+    % Case 9 (no y-label)
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[spaceeff axis]
+                \AddAllObjectPlotsForCase{9}
+            \end{axis}
+        \end{tikzpicture}
+        \caption{Positive Query}\label{fig:throughput_space_efficiency/positive_query}
+    \end{subfigure}%
+    % Case 10 (no y-label)
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[spaceeff axis]
+                \AddAllObjectPlotsForCase{10}
+            \end{axis}
+        \end{tikzpicture}
+        \caption{Negative Query}\label{fig:throughput_space_efficiency/negative_query}
+    \end{subfigure}
 
     \caption{Throughput-space efficiency tradeoff across insertion and query workloads. Each curve shows how throughput and space efficiency vary with load factor, with rightmost points indicating maximum achievable space efficiency.}\label{fig:throughput_space_efficiency_cases}
 \end{figure*}

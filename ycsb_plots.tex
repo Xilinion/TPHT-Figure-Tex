@@ -1,19 +1,16 @@
 \begin{figure*}[h]
     \centering
-    \begin{minipage}{0.95\linewidth}
-        \centering
-        \pgfplotslegendfromname{throughput-legend-horizontal}
+    \pgfplotslegendfromname{throughput-legend-horizontal}
 
-        % Single row: Load, Run A, Run B, Run C, Run A^-, Run B^-, Run C^-
-        \generateSubfigure{17}{Load}{fill_throughput}{0}%
-        \generateSubfigureNoYLabel{17}{Run A}{run_throughput}{0}%
-        \generateSubfigureNoYLabel{18}{Run B}{run_throughput}{0}%
-        \generateSubfigureNoYLabel{19}{Run C}{run_throughput}{0}%
-        \generateSubfigureNoYLabel{20}{Run A$^-$}{run_throughput}{0}%
-        \generateSubfigureNoYLabel{21}{Run B$^-$}{run_throughput}{0}%
-        \generateSubfigureNoYLabel{22}{Run C$^-$}{run_throughput}{0}%
-        \generateSubfigureNoYLabel{28}{Run X}{run_throughput}{0}
-    \end{minipage}
+    % Single row: Load, Run A, Run B, Run C, Run A^-, Run B^-, Run C^-
+    \generateSubfigure{17}{Load}{fill_throughput}{0}%
+    \generateSubfigureNoYLabel{17}{Run A}{run_throughput}{0}%
+    \generateSubfigureNoYLabel{18}{Run B}{run_throughput}{0}%
+    \generateSubfigureNoYLabel{19}{Run C}{run_throughput}{0}%
+    \generateSubfigureNoYLabel{20}{Run A$^-$}{run_throughput}{0}%
+    \generateSubfigureNoYLabel{21}{Run B$^-$}{run_throughput}{0}%
+    \generateSubfigureNoYLabel{22}{Run C$^-$}{run_throughput}{0}%
+    \generateSubfigureNoYLabel{28}{Run X}{run_throughput}{0}
     \caption{Performance of hash tables on YCSB workloads with 16 threads. (Throughput is Million ops/second).}
     \label{fig:throughput_subfigures}
 \end{figure*}

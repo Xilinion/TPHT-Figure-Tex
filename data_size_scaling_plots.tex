@@ -61,125 +61,122 @@
 % Shared legend (reuse scaling legend styles)
 \begin{figure*}[h]
   \centering
-  \begin{minipage}{0.95\linewidth}
+  {\pgfplotslegendfromname{spaceeff-legend}}
+  % Case 1
+  \begin{subfigure}[b]{0.27\textwidth}
+    \tiny
     \centering
-    {\pgfplotslegendfromname{spaceeff-legend}}
-    % Case 1
-    \begin{subfigure}[b]{0.27\textwidth}
-      \tiny
-      \centering
-      \begin{tikzpicture}
-        \begin{axis}[
-            width=5cm,
-            height=3.2cm,
-            xlabel={Dataset Size (MB)},
-            ylabel={Throughput (M/s)},
-            xmode=log,
-            log basis x=2,
-            ymin=0,
-            xmin=131072,
-            xmax=268435456,
-            xtick={262144,2097152,16777216,134217728},
-            xticklabels={4,32,256,2048},
-            grid=major,
-            grid style={gray!30},
-            tick label style={font=\small},
-            label style={font=\small},
-            scaled ticks=true,
-            tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
-          ]
-          \AddAllObjectsForDataSize{1}
-        \end{axis}
-      \end{tikzpicture}
-      \caption{\getScalingCaseName{1}}
-    \end{subfigure}%
-    % Case 3
-    \begin{subfigure}[b]{0.24\textwidth}
-      \tiny
-      \centering
-      \begin{tikzpicture}
-        \begin{axis}[
-            width=5cm,
-            height=3.2cm,
-            xlabel={Dataset Size (MB)},
-            % ylabel={Throughput (M/s)},
-            xmode=log,
-            log basis x=2,
-            ymin=0,
-            xmin=131072,
-            xmax=268435456,
-            xtick={262144,2097152,16777216,134217728},
-            xticklabels={4,32,256,2048},
-            grid=major,
-            grid style={gray!30},
-            tick label style={font=\small},
-            label style={font=\small},
-            scaled ticks=true,
-            tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
-          ]
-          \AddAllObjectsForDataSize{3}
-        \end{axis}
-      \end{tikzpicture}
-      \caption{\getScalingCaseName{3}}
-    \end{subfigure}%
-    % Case 6
-    \begin{subfigure}[b]{0.24\textwidth}
-      \tiny
-      \centering
-      \begin{tikzpicture}
-        \begin{axis}[
-            width=5cm,
-            height=3.2cm,
-            xlabel={Dataset Size (MB)},
-            % ylabel={Throughput (M/s)},
-            xmode=log,
-            log basis x=2,
-            ymin=0,
-            xmin=131072,
-            xmax=268435456,
-            xtick={262144,2097152,16777216,134217728},
-            xticklabels={4,32,256,2048},
-            grid=major,
-            grid style={gray!30},
-            tick label style={font=\small},
-            label style={font=\small},
-            scaled ticks=true,
-            tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
-          ]
-          \AddAllObjectsForDataSize{9}
-        \end{axis}
-      \end{tikzpicture}
-      \caption{\getScalingCaseName{9}}
-    \end{subfigure}%
-    % Case 7
-    \begin{subfigure}[b]{0.24\textwidth}
-      \tiny
-      \centering
-      \begin{tikzpicture}
-        \begin{axis}[
-            width=5cm,
-            height=3.2cm,
-            xlabel={Dataset Size (MB)},
-            % ylabel={Throughput (M/s)},
-            xmode=log,
-            log basis x=2,
-            ymin=0,
-            xmin=131072,
-            xmax=268435456,
-            xtick={262144,2097152,16777216,134217728},
-            xticklabels={4,32,256,2048},
-            grid=major,
-            grid style={gray!30},
-            tick label style={font=\small},
-            label style={font=\small},
-            scaled ticks=true,
-            tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
-          ]
-          \AddAllObjectsForDataSize{10}
-        \end{axis}
-      \end{tikzpicture}
-      \caption{\getScalingCaseName{10}}
-    \end{subfigure}%
-  \end{minipage}
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=5cm,
+          height=3.2cm,
+          xlabel={Dataset Size (MB)},
+          ylabel={Throughput (M/s)},
+          xmode=log,
+          log basis x=2,
+          ymin=0,
+          xmin=131072,
+          xmax=268435456,
+          xtick={262144,2097152,16777216,134217728},
+          xticklabels={4,32,256,2048},
+          grid=major,
+          grid style={gray!30},
+          tick label style={font=\small},
+          label style={font=\small},
+          scaled ticks=true,
+          tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
+        ]
+        \AddAllObjectsForDataSize{1}
+      \end{axis}
+    \end{tikzpicture}
+    \caption{\getScalingCaseName{1}}
+  \end{subfigure}%
+  % Case 3
+  \begin{subfigure}[b]{0.24\textwidth}
+    \tiny
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=5cm,
+          height=3.2cm,
+          xlabel={Dataset Size (MB)},
+          % ylabel={Throughput (M/s)},
+          xmode=log,
+          log basis x=2,
+          ymin=0,
+          xmin=131072,
+          xmax=268435456,
+          xtick={262144,2097152,16777216,134217728},
+          xticklabels={4,32,256,2048},
+          grid=major,
+          grid style={gray!30},
+          tick label style={font=\small},
+          label style={font=\small},
+          scaled ticks=true,
+          tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
+        ]
+        \AddAllObjectsForDataSize{3}
+      \end{axis}
+    \end{tikzpicture}
+    \caption{\getScalingCaseName{3}}
+  \end{subfigure}%
+  % Case 6
+  \begin{subfigure}[b]{0.24\textwidth}
+    \tiny
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=5cm,
+          height=3.2cm,
+          xlabel={Dataset Size (MB)},
+          % ylabel={Throughput (M/s)},
+          xmode=log,
+          log basis x=2,
+          ymin=0,
+          xmin=131072,
+          xmax=268435456,
+          xtick={262144,2097152,16777216,134217728},
+          xticklabels={4,32,256,2048},
+          grid=major,
+          grid style={gray!30},
+          tick label style={font=\small},
+          label style={font=\small},
+          scaled ticks=true,
+          tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
+        ]
+        \AddAllObjectsForDataSize{9}
+      \end{axis}
+    \end{tikzpicture}
+    \caption{\getScalingCaseName{9}}
+  \end{subfigure}%
+  % Case 7
+  \begin{subfigure}[b]{0.24\textwidth}
+    \tiny
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=5cm,
+          height=3.2cm,
+          xlabel={Dataset Size (MB)},
+          % ylabel={Throughput (M/s)},
+          xmode=log,
+          log basis x=2,
+          ymin=0,
+          xmin=131072,
+          xmax=268435456,
+          xtick={262144,2097152,16777216,134217728},
+          xticklabels={4,32,256,2048},
+          grid=major,
+          grid style={gray!30},
+          tick label style={font=\small},
+          label style={font=\small},
+          scaled ticks=true,
+          tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
+        ]
+        \AddAllObjectsForDataSize{10}
+      \end{axis}
+    \end{tikzpicture}
+    \caption{\getScalingCaseName{10}}
+  \end{subfigure}%
   \caption{Performance scaling analysis for hash tables with increasing dataset size, single-threaded.}\label{fig:data_size_scaling}
 \end{figure*}
