@@ -1,60 +1,62 @@
 % Resizing RSS plot: reads csv/resizing_rss.csv and plots completion vs memory
 \begin{figure}[h]
     \centering
-    \begin{tikzpicture}
-    \begin{axis}[
-        width=8.5cm,
-        height=3.8cm,
-        xlabel={Completion Percentage},
-        ylabel={Memory Usage (MB)},
-        xmin=0, xmax=100,
-        ymin=0,
-        grid=both,
-        grid style={gray!30},
-        legend style={draw=none, at={(0.5,1.02)}, anchor=south, legend columns=3, legend cell align=left},
-        tick label style={font=\small},
-        label style={font=\small}
-    ]
+    \begin{minipage}{0.95\linewidth}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=8.5cm,
+                    height=3.8cm,
+                    xlabel={Completion Percentage},
+                    ylabel={Memory Usage (MB)},
+                    xmin=0, xmax=100,
+                    ymin=0,
+                    grid=both,
+                    grid style={gray!30},
+                    legend style={draw=none, at={(0.5,1.02)}, anchor=south, legend columns=3, legend cell align=left},
+                    tick label style={font=\small},
+                    label style={font=\small}
+                ]
 
-    % List of object ids to plot; adjust if needed
-    % Each line filters rows by object_id and plots as a line
-    
-    % Object 6 = Cuckoo (htthree)
-    \addplot[CuckooLineStyle, mark=none, sharp plot]
-        table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{6:6}] {\resizingrssdata};
-    \addlegendentry{\htthree}
+                % List of object ids to plot; adjust if needed
+                % Each line filters rows by object_id and plots as a line
 
-    % Object 7 = IcebergHT (htfour)
-    \addplot[IcebergLineStyle, mark=none, sharp plot]
-        table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{7:7}] {\resizingrssdata};
-    \addlegendentry{\htfour}
+                % Object 6 = Cuckoo (htthree)
+                \addplot[CuckooLineStyle, mark=none, sharp plot]
+                table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{6:6}] {\resizingrssdata};
+                \addlegendentry{\htthree}
 
-    % Object 15 = Junction (htfive)
-    \addplot[JunctionLineStyle, mark=none, sharp plot]
-        table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{15:15}] {\resizingrssdata};
-    \addlegendentry{\htfive}
+                % Object 7 = IcebergHT (htfour)
+                \addplot[IcebergLineStyle, mark=none, sharp plot]
+                table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{7:7}] {\resizingrssdata};
+                \addlegendentry{\htfour}
 
-    % Object 24 = TBB (htsix)
-    \addplot[TBBLineStyle, mark=none, sharp plot]
-        table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{24:24}] {\resizingrssdata};
-    \addlegendentry{\htsix}
+                % Object 15 = Junction (htfive)
+                \addplot[JunctionLineStyle, mark=none, sharp plot]
+                table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{15:15}] {\resizingrssdata};
+                \addlegendentry{\htfive}
 
-    % Object 18 = Chained-TPHT (htone)
-    \addplot[TPHTLineStyle, mark=none, sharp plot]
-        table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{18:18}] {\resizingrssdata};
-    \addlegendentry{\htone}
+                % Object 24 = TBB (htsix)
+                \addplot[TBBLineStyle, mark=none, sharp plot]
+                table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{24:24}] {\resizingrssdata};
+                \addlegendentry{\htsix}
 
-    % Object 21 = Flattened-TPHT (httwo)
-    \addplot[BlastLineStyle, mark=none, sharp plot]
-        table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{21:21}] {\resizingrssdata};
-    \addlegendentry{\httwo}
+                % Object 18 = Chained-TPHT (htone)
+                \addplot[TPHTLineStyle, mark=none, sharp plot]
+                table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{18:18}] {\resizingrssdata};
+                \addlegendentry{\htone}
 
-    % Object 25 = Stagger ByteArray Chained HT (htseven)
-    \addplot[TPHTLineStyle, mark=none, sharp plot, dashed]
-        table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{25:25}] {\resizingrssdata};
+                % Object 21 = Flattened-TPHT (httwo)
+                \addplot[BlastLineStyle, mark=none, sharp plot]
+                table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{21:21}] {\resizingrssdata};
+                \addlegendentry{\httwo}
 
-    \end{axis}
-    \end{tikzpicture}
+                % Object 25 = Stagger ByteArray Chained HT (htseven)
+                \addplot[TPHTLineStyle, mark=none, sharp plot, dashed]
+                table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{25:25}] {\resizingrssdata};
 
+            \end{axis}
+        \end{tikzpicture}
+    \end{minipage}
     \caption{Memory usage during resizing operations over completion percentage. The dashed line corresponds to \htone with staggering enabled.}\label{fig:resizing_rss_plot}
 \end{figure}
