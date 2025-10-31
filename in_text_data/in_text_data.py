@@ -95,8 +95,8 @@ class DataProcessor:
         httwo_load_fill_raw = httwo_data[httwo_data['case_id'] == 17]['fill_throughput (ops/s)'].values[0]
         self.add_result("httwo_avg_fill_throughput", round(httwo_load_fill_raw / 1_000_000, 1))
         
-        # Average run throughput across all run phases (case_ids 17-22) - keep raw values
-        httwo_run_throughputs_raw = httwo_data[httwo_data['case_id'].isin([17, 18, 19, 20, 21, 22])]['run_throughput (ops/s)']
+        # Average run throughput across all run phases (case_ids 17-22, 28) - keep raw values
+        httwo_run_throughputs_raw = httwo_data[httwo_data['case_id'].isin([17, 18, 19, 20, 21, 22, 28])]['run_throughput (ops/s)']
         httwo_avg_run_raw = httwo_run_throughputs_raw.mean()
         self.add_result("httwo_avg_run_throughput", round(httwo_avg_run_raw / 1_000_000, 1))
         
@@ -107,8 +107,8 @@ class DataProcessor:
         htone_load_fill_raw = htone_data[htone_data['case_id'] == 17]['fill_throughput (ops/s)'].values[0]
         self.add_result("htone_avg_fill_throughput", round(htone_load_fill_raw / 1_000_000, 1))
         
-        # Average run throughput across all run phases - keep raw values
-        htone_run_throughputs_raw = htone_data[htone_data['case_id'].isin([17, 18, 19, 20, 21, 22])]['run_throughput (ops/s)']
+        # Average run throughput across all run phases (case_ids 17-22, 28) - keep raw values
+        htone_run_throughputs_raw = htone_data[htone_data['case_id'].isin([17, 18, 19, 20, 21, 22, 28])]['run_throughput (ops/s)']
         htone_avg_run_raw = htone_run_throughputs_raw.mean()
         self.add_result("htone_avg_run_throughput", round(htone_avg_run_raw / 1_000_000, 1))
         
@@ -123,8 +123,8 @@ class DataProcessor:
             baseline_load_fill_raw = baseline_data[baseline_data['case_id'] == 17]['fill_throughput (ops/s)'].values[0]
             self.add_result(f"{macro}_avg_fill_throughput", round(baseline_load_fill_raw / 1_000_000, 1))
             
-            # Average run throughput across all run phases (case_ids 17-22)
-            baseline_run_throughputs_raw = baseline_data[baseline_data['case_id'].isin([17, 18, 19, 20, 21, 22])]['run_throughput (ops/s)']
+            # Average run throughput across all run phases (case_ids 17-22, 28)
+            baseline_run_throughputs_raw = baseline_data[baseline_data['case_id'].isin([17, 18, 19, 20, 21, 22, 28])]['run_throughput (ops/s)']
             baseline_avg_run_raw = baseline_run_throughputs_raw.mean()
             self.add_result(f"{macro}_avg_run_throughput", round(baseline_avg_run_raw / 1_000_000, 1))
         
@@ -145,7 +145,7 @@ class DataProcessor:
         baseline_avg_runs = []
         for obj_id in baseline_objects:
             baseline_obj_data = df_filtered[df_filtered['object_id'] == obj_id]
-            baseline_run_throughputs = baseline_obj_data[baseline_obj_data['case_id'].isin([17, 18, 19, 20, 21, 22])]['run_throughput (ops/s)']
+            baseline_run_throughputs = baseline_obj_data[baseline_obj_data['case_id'].isin([17, 18, 19, 20, 21, 22, 28])]['run_throughput (ops/s)']
             baseline_avg_run = baseline_run_throughputs.mean()
             baseline_avg_runs.append(baseline_avg_run)
         
@@ -206,11 +206,11 @@ class DataProcessor:
         # === htfour vs htthree run phase comparison ===
         # Compare htfour (object_id=7) run phase throughput to htthree (object_id=6)
         htfour_data = df_filtered[df_filtered['object_id'] == 7]
-        htfour_run_throughputs_raw = htfour_data[htfour_data['case_id'].isin([17, 18, 19, 20, 21, 22])]['run_throughput (ops/s)']
+        htfour_run_throughputs_raw = htfour_data[htfour_data['case_id'].isin([17, 18, 19, 20, 21, 22, 28])]['run_throughput (ops/s)']
         htfour_avg_run_raw = htfour_run_throughputs_raw.mean()
         
         htthree_data = df_filtered[df_filtered['object_id'] == 6]
-        htthree_run_throughputs_raw = htthree_data[htthree_data['case_id'].isin([17, 18, 19, 20, 21, 22])]['run_throughput (ops/s)']
+        htthree_run_throughputs_raw = htthree_data[htthree_data['case_id'].isin([17, 18, 19, 20, 21, 22, 28])]['run_throughput (ops/s)']
         htthree_avg_run_raw = htthree_run_throughputs_raw.mean()
         
         htfour_over_htthree_ratio = htfour_avg_run_raw / htthree_avg_run_raw - 1
@@ -224,7 +224,7 @@ class DataProcessor:
         # === htfour workload variance analysis ===
         # Calculate coefficient of variation (CV) for htfour across all run workloads
         htfour_data = df_filtered[df_filtered['object_id'] == 7]
-        htfour_run_throughputs = htfour_data[htfour_data['case_id'].isin([17, 18, 19, 20, 21, 22])]['run_throughput (ops/s)']
+        htfour_run_throughputs = htfour_data[htfour_data['case_id'].isin([17, 18, 19, 20, 21, 22, 28])]['run_throughput (ops/s)']
         htfour_mean = htfour_run_throughputs.mean()
         htfour_std = htfour_run_throughputs.std()
         htfour_cv_percent = (htfour_std / htfour_mean) * 100
@@ -736,7 +736,8 @@ class DataProcessor:
         # Get htfour non-resizing average (across fill and run)
         htfour_no_resizing_data = df_no_resizing[df_no_resizing['object_id'] == 7]
         htfour_no_resizing_fill_raw = htfour_no_resizing_data[htfour_no_resizing_data['case_id'] == 17]['fill_throughput (ops/s)'].values[0]
-        htfour_no_resizing_run_throughputs_raw = htfour_no_resizing_data[htfour_no_resizing_data['case_id'].isin([17, 18, 19, 20, 21, 22])]['run_throughput (ops/s)']
+        # Include case_id=28 for non-resizing run-phase aggregation
+        htfour_no_resizing_run_throughputs_raw = htfour_no_resizing_data[htfour_no_resizing_data['case_id'].isin([17, 18, 19, 20, 21, 22, 28])]['run_throughput (ops/s)']
         htfour_no_resizing_avg_run_raw = htfour_no_resizing_run_throughputs_raw.mean()
         htfour_no_resizing_combined_avg = (htfour_no_resizing_fill_raw + htfour_no_resizing_avg_run_raw) / 2
         
