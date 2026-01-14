@@ -1,19 +1,16 @@
 \begin{figure}[h]
     \centering
-    \pgfplotslegendfromname{throughput-legend-3column}
+    \pgfplotslegendfromname{L1-sized-table-legend-3column}
     \begin{tikzpicture}
         \begin{axis}[
                 width=\linewidth,
-                height=3.8cm,
+                height=3.5cm,
                 ylabel={Throughput (M/s)},
                 ybar,
                 bar width=3pt,
-                % enlarge x limits=0.12,
                 enlarge x limits=0.15,
-                % Use numeric x, but show your symbolic labels:
-                xtick={0,1,2,3,4},
-                xticklabels={Load,{Run A},{Run B},{Run C},{Run C$^-$}},
-                % symbolic x coords={Load, {Run A}, {Run B}, {Run C}, {Run C$^-$}},
+                xtick={0,1,2},
+                xticklabels={Insert, Query$^{+}$, Query$^{-}$},
                 axis lines=box,
                 tick align=inside,
                 xtick style={draw=none},
@@ -33,15 +30,15 @@
                 legend entries = {\htthree, \htfour, \htfive, \htsix, \htone, \httwo},
                 legend cell align = left,
                 legend style={draw=none, legend columns=3, /tikz/every even column/.append style={column sep=1cm}},
-                legend to name={throughput-legend-3column},
+                legend to name={L1-sized-table-legend-3column},
                 unbounded coords=discard,
                 filter discard warning=false,
             ]
 
-            \addResizingPlots;
+            \addSmallTablePlots
 
         \end{axis}
     \end{tikzpicture}
 
-    \caption{Performance of hash tables on YCSB workloads with 16 threads (resizing enabled).}\label{fig:throughput_subfigures_resizing}
+    \caption{Throughput on small table (2047 entries) across operations.}\label{fig:small_table_throughput}
 \end{figure}

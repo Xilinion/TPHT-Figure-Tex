@@ -1,0 +1,34 @@
+\def\SmallShiftA{-4.0*\pgfplotbarwidth}
+\def\SmallShiftB{-2.4*\pgfplotbarwidth}
+\def\SmallShiftC{-0.8*\pgfplotbarwidth}
+\def\SmallShiftD{ 0.8*\pgfplotbarwidth}
+\def\SmallShiftE{ 2.4*\pgfplotbarwidth}
+\def\SmallShiftF{ 4.0*\pgfplotbarwidth}
+
+% #1 style, #2 object_id, #3 case_id, #4 xindex, #5 shift
+\newcommand{\addSmallTableBar}[5]{%
+  \begingroup
+  \addplot[#1, bar shift=#5] table[
+      x expr=#4,
+      y expr=\thisrow{throughput}/1e6,
+      restrict expr to domain={\thisrow{object_id}}{#2:#2},
+      restrict expr to domain={\thisrow{case_id}}{#3:#3}
+    ]{\smalltabledata};
+  \endgroup
+}
+
+% #1 case_id, #2 xindex
+\newcommand{\addSmallGroup}[2]{%
+  \addSmallTableBar{CuckooBarStyle}{6}{#1}{#2}{\SmallShiftA}%
+  \addSmallTableBar{IcebergBarStyle}{7}{#1}{#2}{\SmallShiftB}%
+  \addSmallTableBar{JunctionBarStyle}{15}{#1}{#2}{\SmallShiftC}%
+  \addSmallTableBar{TBBBarStyle}{24}{#1}{#2}{\SmallShiftF}%
+  \addSmallTableBar{TPHTBarStyle}{17}{#1}{#2}{\SmallShiftD}%
+  \addSmallTableBar{BlastBarStyle}{20}{#1}{#2}{\SmallShiftE}%
+}
+
+\newcommand{\addSmallTablePlots}{%
+  \addSmallGroup{1}{0}% Insert
+  \addSmallGroup{9}{1}% Query+
+  \addSmallGroup{10}{2}% Query-
+}
