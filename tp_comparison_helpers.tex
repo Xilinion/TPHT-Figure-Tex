@@ -1,0 +1,31 @@
+\def\TPShiftA{-2.4*\pgfplotbarwidth}
+\def\TPShiftB{-0.8*\pgfplotbarwidth}
+\def\TPShiftC{ 0.8*\pgfplotbarwidth}
+\def\TPShiftD{ 2.4*\pgfplotbarwidth}
+
+% #1 style, #2 object_id, #3 case_id, #4 xindex, #5 shift
+\newcommand{\addTPCompBar}[5]{%
+  \begingroup
+    \addplot[#1, bar shift=#5] table[
+      x expr=#4,
+      y expr=\thisrow{throughput}/1e6,
+      restrict expr to domain={\thisrow{object_id}}{#2:#2},
+      restrict expr to domain={\thisrow{case_id}}{#3:#3}
+    ]{\tpcompdata};
+  \endgroup
+}
+
+% #1 case_id, #2 xindex
+\newcommand{\addTPCompGroup}[2]{%
+  \addTPCompBar{CuckooBarStyle}{32}{#1}{#2}{\TPShiftA}% TP^{simple}
+  \addTPCompBar{IcebergBarStyle}{33}{#1}{#2}{\TPShiftB}% TP^{fixed}
+  \addTPCompBar{JunctionBarStyle}{34}{#1}{#2}{\TPShiftC}% TP^{variable}
+  \addTPCompBar{TPHTBarStyle}{35}{#1}{#2}{\TPShiftD}% TP^{ours}
+}
+
+\newcommand{\addTPCompPlots}{%
+  \addTPCompGroup{1}{0}% Insert
+  \addTPCompGroup{3}{1}% Delete
+  \addTPCompGroup{6}{2}% Query+
+  \addTPCompGroup{7}{3}% Query-
+}

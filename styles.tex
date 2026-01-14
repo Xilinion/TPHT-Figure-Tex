@@ -5,6 +5,8 @@
 \definecolor{exp4}{RGB}{44, 160, 44}     % green - TPHT
 \definecolor{exp5}{RGB}{148, 103, 189}   % purple - TBB
 \definecolor{exp6}{RGB}{255, 127, 14}     % yellow - Blast
+\definecolor{exp7}{RGB}{102, 194, 165}    % teal - backup1
+\definecolor{exp8}{RGB}{231, 138, 195}    % pink - backup2
 \definecolor{poisson}{RGB}{148, 103, 189} % purple - for theoretical plots
 
 % Define bar styles for each object (used in bar charts)
@@ -32,6 +34,8 @@
     TPHTLineStyle/.style={color=exp4, mark=diamond, mark size=2.5pt, thick, smooth},
     TBBLineStyle/.style={color=exp5, mark=star, mark size=2.5pt, thick, smooth},
     BlastLineStyle/.style={color=exp6, mark=pentagon, mark size=2.5pt, thick, smooth},
+    BackupLineStyleOne/.style={color=exp7, mark=otimes, mark size=2.8pt, thick, smooth, mark options={solid}},
+    BackupLineStyleTwo/.style={color=exp8, mark=x, mark size=2.8pt, thick, smooth, mark options={solid}},
     % Macro-based aliases
     htthreeLineStyle/.style={CuckooLineStyle},
     htfourLineStyle/.style={IcebergLineStyle},
