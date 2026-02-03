@@ -1,6 +1,6 @@
 \pgfplotsset{
     spaceeff compact axis/.style={
-            width=6.2cm,
+            width=4.0cm,
             height=3.7cm,
             xlabel={Space Efficiency},
             xmin=0,
@@ -21,7 +21,7 @@
 }
 
 \newcommand{\PlotCompactObj}[4]{% style, obj_id, case_id, data
-    \addplot[#1] table[
+    \addplot[#1, mark size=1pt] table[
             x=space_efficiency,
             y=throughput_millions,
             restrict expr to domain={\thisrow{object_id}}{#2:#2},
@@ -42,20 +42,20 @@
     \PlotCompactObj{BackupLineStyleTwo}{31}{#1}{\throughputcompactdata}%
 }
 
-\begin{figure*}[h]
+\begin{figure}[h]
     \centering
     {\pgfplotslegendfromname{spaceeff-legend-compact}}
 
-    \begin{subfigure}[b]{0.35\textwidth}
+    \begin{subfigure}[b]{0.35\linewidth}
         \centering
         \begin{tikzpicture}
-            \begin{axis}[spaceeff compact axis with ylabel, legend to name={spaceeff-legend-compact}, legend entries={TPHT, Blast, Bucket, Group, Cleary$^{plain}$, Cleary$^{sparse}$, Layered$^{plain}$, Layered$^{sparse}$}, legend cell align=left, legend style={draw=none, legend columns=4, /tikz/every even column/.append style={column sep=0.4cm}}]
+            \begin{axis}[spaceeff compact axis with ylabel, legend to name={spaceeff-legend-compact}, legend entries={TPHT, Blast, Bucket, Group, Cleary$^{plain}$, Cleary$^{sparse}$, Layered$^{plain}$, Layered$^{sparse}$}, legend cell align=left, legend style={draw=none, legend columns=4, /tikz/every even column/.append style={column sep=0.1cm}}]
                 \AddAllCompactPlotsForCase{1}
             \end{axis}
         \end{tikzpicture}
         \caption{Insertion}\label{fig:throughput_space_efficiency_compact/insertion}
     \end{subfigure}%
-    \begin{subfigure}[b]{0.32\textwidth}
+    \begin{subfigure}[b]{0.32\linewidth}
         \centering
         \begin{tikzpicture}
             \begin{axis}[spaceeff compact axis]
@@ -64,7 +64,7 @@
         \end{tikzpicture}
         \caption{Positive Query}\label{fig:throughput_space_efficiency_compact/positive_query}
     \end{subfigure}%
-    \begin{subfigure}[b]{0.32\textwidth}
+    \begin{subfigure}[b]{0.32\linewidth}
         \centering
         \begin{tikzpicture}
             \begin{axis}[spaceeff compact axis]
@@ -75,4 +75,4 @@
     \end{subfigure}
 
     \caption{Throughput-space efficiency tradeoff for compact hash tables.}\label{fig:throughput_space_efficiency_compact_cases}
-\end{figure*}
+\end{figure}

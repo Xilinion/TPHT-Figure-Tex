@@ -1,0 +1,106 @@
+% Combined resizing figure: memory usage (left) and sliding-window throughput (right)
+\begin{figure}[t]
+    \centering
+    \noindent\begin{minipage}{\linewidth}
+        \centering
+        \pgfplotslegendfromname{resizing-combined-legend}
+    \end{minipage}
+
+    \noindent\begin{minipage}{0.48\linewidth}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=3.5cm,
+                    height=3.8cm,
+                    xlabel={Completion Percentage},
+                    ylabel={Memory Usage (MB)},
+                    xmin=0, xmax=100,
+                    ymin=0,
+                    grid=both,
+                    grid style={gray!30},
+                    legend to name={resizing-combined-legend},
+                    legend style={draw=none, legend columns=3, legend cell align=left},
+                    tick label style={font=\small},
+                    label style={font=\small}
+                ]
+
+                % Object 6 = Cuckoo (htthree)
+                \addplot[CuckooLineStyle, mark=none, sharp plot]
+                table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{6:6}] {\resizingrssdata};
+                \addlegendentry{\htthree}
+
+                % Object 7 = IcebergHT (htfour)
+                \addplot[IcebergLineStyle, mark=none, sharp plot]
+                table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{7:7}] {\resizingrssdata};
+                \addlegendentry{\htfour}
+
+                % Object 15 = Junction (htfive)
+                \addplot[JunctionLineStyle, mark=none, sharp plot]
+                table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{15:15}] {\resizingrssdata};
+                \addlegendentry{\htfive}
+
+                % Object 24 = TBB (htsix)
+                \addplot[TBBLineStyle, mark=none, sharp plot]
+                table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{24:24}] {\resizingrssdata};
+                \addlegendentry{\htsix}
+
+                % Object 18 = Chained-TPHT (htone)
+                \addplot[TPHTLineStyle, mark=none, sharp plot]
+                table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{18:18}] {\resizingrssdata};
+                \addlegendentry{\htone}
+
+                % Object 21 = Flattened-TPHT (httwo)
+                \addplot[BlastLineStyle, mark=none, sharp plot]
+                table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{21:21}] {\resizingrssdata};
+                \addlegendentry{\httwo}
+
+                % Object 25 = Stagger ByteArray Chained HT (htseven)
+                \addplot[TPHTLineStyle, mark=none, sharp plot, dashed]
+                table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{25:25}] {\resizingrssdata};
+
+            \end{axis}
+        \end{tikzpicture}
+        \captionof{figure}{Memory usage during resizing. The dashed line indicates staggering enabled.}\label{fig:resizing_rss_plot_combined}
+    \end{minipage}\hfill
+    \begin{minipage}{0.48\linewidth}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=5.5cm,
+                    height=3.8cm,
+                    xlabel={Window},
+                    ylabel={Throughput (M/s)},
+                    xmin=0, xmax=100,
+                    ymin=0,
+                    grid=both,
+                    grid style={gray!30},
+                    tick label style={font=\small},
+                    label style={font=\small}
+                ]
+
+                \addplot[CuckooLineStyle, mark=none, sharp plot, forget plot]
+                table[x=window, y expr=\thisrow{throughput (ops/s)}/1e6, restrict expr to domain={\thisrow{object_id}}{6:6}] {\progressiveresslidingwindowdata};
+
+                \addplot[IcebergLineStyle, mark=none, sharp plot, forget plot]
+                table[x=window, y expr=\thisrow{throughput (ops/s)}/1e6, restrict expr to domain={\thisrow{object_id}}{7:7}] {\progressiveresslidingwindowdata};
+
+                \addplot[JunctionLineStyle, mark=none, sharp plot, forget plot]
+                table[x=window, y expr=\thisrow{throughput (ops/s)}/1e6, restrict expr to domain={\thisrow{object_id}}{15:15}] {\progressiveresslidingwindowdata};
+
+                \addplot[TBBLineStyle, mark=none, sharp plot, forget plot]
+                table[x=window, y expr=\thisrow{throughput (ops/s)}/1e6, restrict expr to domain={\thisrow{object_id}}{24:24}] {\progressiveresslidingwindowdata};
+
+                \addplot[TPHTLineStyle, mark=none, sharp plot, forget plot]
+                table[x=window, y expr=\thisrow{throughput (ops/s)}/1e6, restrict expr to domain={\thisrow{object_id}}{18:18}] {\progressiveresslidingwindowdata};
+
+                \addplot[BlastLineStyle, mark=none, sharp plot, forget plot]
+                table[x=window, y expr=\thisrow{throughput (ops/s)}/1e6, restrict expr to domain={\thisrow{object_id}}{21:21}] {\progressiveresslidingwindowdata};
+
+                \addplot[TPHTLineStyle, mark=none, sharp plot, dashed, forget plot]
+                table[x=window, y expr=\thisrow{throughput (ops/s)}/1e6, restrict expr to domain={\thisrow{object_id}}{25:25}] {\progressiveresslidingwindowdata};
+
+            \end{axis}
+        \end{tikzpicture}
+        \captionof{figure}{Sliding window insertion throughput across windows.}\label{fig:progressive_resizing_sliding_window_throughput_combined}
+    \end{minipage}
+\end{figure}
