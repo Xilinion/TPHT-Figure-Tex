@@ -1,6 +1,6 @@
 \pgfplotsset{
     spaceeff compact axis/.style={
-            width=4.0cm,
+            width=6.2cm,
             height=3.7cm,
             xlabel={Space Efficiency},
             xmin=0,
@@ -21,7 +21,7 @@
 }
 
 \newcommand{\PlotCompactObj}[4]{% style, obj_id, case_id, data
-    \addplot[#1, mark size=1pt] table[
+    \addplot[#1] table[
             x=space_efficiency,
             y=throughput_millions,
             restrict expr to domain={\thisrow{object_id}}{#2:#2},
@@ -42,7 +42,7 @@
     \PlotCompactObj{BackupLineStyleTwo}{31}{#1}{\throughputcompactdata}%
 }
 
-\begin{figure}[h]
+\begin{figure*}[h]
     \centering
     {\pgfplotslegendfromname{spaceeff-legend-compact}}
 
@@ -75,4 +75,4 @@
     \end{subfigure}
 
     \caption{Throughput-space efficiency tradeoff for compact hash tables.}\label{fig:throughput_space_efficiency_compact_cases}
-\end{figure}
+\end{figure*}
