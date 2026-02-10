@@ -13,48 +13,42 @@
       x=table_size,
       y expr=\thisrow{throughput (ops/s)}/1000000,
       restrict expr to domain={\thisrow{case_id}}{#1:#1},
-      restrict expr to domain={\thisrow{object_id}}{6:6},
-      restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
+      restrict expr to domain={\thisrow{object_id}}{6:6}
     ] {\datasizedata};
   % \htfour (7)
   \addplot[IcebergLineStyle] table[
       x=table_size,
       y expr=\thisrow{throughput (ops/s)}/1000000,
       restrict expr to domain={\thisrow{case_id}}{#1:#1},
-      restrict expr to domain={\thisrow{object_id}}{7:7},
-      restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
+      restrict expr to domain={\thisrow{object_id}}{7:7}
     ] {\datasizedata};
   % \htfive (15)
   \addplot[JunctionLineStyle] table[
       x=table_size,
       y expr=\thisrow{throughput (ops/s)}/1000000,
       restrict expr to domain={\thisrow{case_id}}{#1:#1},
-      restrict expr to domain={\thisrow{object_id}}{15:15},
-      restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
+      restrict expr to domain={\thisrow{object_id}}{15:15}
     ] {\datasizedata};
   % \htsix (24)
   \addplot[TBBLineStyle] table[
       x=table_size,
       y expr=\thisrow{throughput (ops/s)}/1000000,
       restrict expr to domain={\thisrow{case_id}}{#1:#1},
-      restrict expr to domain={\thisrow{object_id}}{24:24},
-      restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
+      restrict expr to domain={\thisrow{object_id}}{24:24}
     ] {\datasizedata};
   % \htone (17)
   \addplot[TPHTLineStyle] table[
       x=table_size,
       y expr=\thisrow{throughput (ops/s)}/1000000,
       restrict expr to domain={\thisrow{case_id}}{#1:#1},
-      restrict expr to domain={\thisrow{object_id}}{17:17},
-      restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
+      restrict expr to domain={\thisrow{object_id}}{17:17}
     ] {\datasizedata};
   % \httwo (20)
   \addplot[BlastLineStyle] table[
       x=table_size,
       y expr=\thisrow{throughput (ops/s)}/1000000,
       restrict expr to domain={\thisrow{case_id}}{#1:#1},
-      restrict expr to domain={\thisrow{object_id}}{20:20},
-      restrict expr to domain={\thisrow{table_size}}{32768:1000000000}
+      restrict expr to domain={\thisrow{object_id}}{20:20}
     ] {\datasizedata};
 }
 
@@ -75,10 +69,10 @@
           xmode=log,
           log basis x=2,
           ymin=0,
-          xmin=131072,
+          xmin=1024,
           xmax=268435456,
-          xtick={262144,2097152,16777216,134217728},
-          xticklabels={4,32,256,2048},
+          xtick={2048,262144,2097152,16777216,134217728},
+          xticklabels={1/32,4,32,256,2048},
           grid=major,
           grid style={gray!30},
           tick label style={font=\small},
@@ -104,10 +98,10 @@
           xmode=log,
           log basis x=2,
           ymin=0,
-          xmin=131072,
+          xmin=1024,
           xmax=268435456,
-          xtick={262144,2097152,16777216,134217728},
-          xticklabels={4,32,256,2048},
+          xtick={2048,262144,2097152,16777216,134217728},
+          xticklabels={1/32,4,32,256,2048},
           grid=major,
           grid style={gray!30},
           tick label style={font=\small},
@@ -133,10 +127,10 @@
           xmode=log,
           log basis x=2,
           ymin=0,
-          xmin=131072,
+          xmin=1024,
           xmax=268435456,
-          xtick={262144,2097152,16777216,134217728},
-          xticklabels={4,32,256,2048},
+          xtick={2048,262144,2097152,16777216,134217728},
+          xticklabels={1/32,4,32,256,2048},
           grid=major,
           grid style={gray!30},
           tick label style={font=\small},
@@ -162,10 +156,10 @@
           xmode=log,
           log basis x=2,
           ymin=0,
-          xmin=131072,
+          xmin=1024,
           xmax=268435456,
-          xtick={262144,2097152,16777216,134217728},
-          xticklabels={4,32,256,2048},
+          xtick={2048,262144,2097152,16777216,134217728},
+          xticklabels={1/32,4,32,256,2048},
           grid=major,
           grid style={gray!30},
           tick label style={font=\small},
