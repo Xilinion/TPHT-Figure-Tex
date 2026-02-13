@@ -52,6 +52,19 @@
     ] {\datasizedata};
 }
 
+% Axis break zigzag macro (draws on x-axis between positions 0 and 1)
+% \newcommand{\DrawAxisBreakZigzag}{%
+%   \draw[white, line width=4pt] (axis cs:0.5,0) +(-6pt,-4pt) rectangle +(6pt,4pt);
+%   \draw[thick] (axis cs:0.5,0) +(-5pt,-3pt) -- +(-2pt,3pt) -- +(2pt,-3pt) -- +(5pt,3pt);
+% }
+% % Axis break zigzag macro
+\newcommand{\DrawAxisBreakZigzag}{%
+  % 1. Reduced eraser width from 8pt to 5pt to match the zigzag exactly
+  \fill[white] (axis cs:0.5,0) +(-3pt,-3pt) rectangle +(3pt,3pt);
+  % 2. The zigzag (unchanged)
+  \draw (axis cs:0.5,0) +(-3pt, 0pt) -- +(-1pt,2pt) -- +(1pt,-2pt) -- +(3pt,0pt);
+}
+
 % Shared legend (reuse scaling legend styles)
 \begin{figure*}[h]
   \centering
@@ -62,17 +75,22 @@
     \centering
     \begin{tikzpicture}
       \begin{axis}[
+          clip=false,
           width=5cm,
           height=3.2cm,
           xlabel={Dataset Size (MB)},
           ylabel={Throughput (M/s)},
-          xmode=log,
-          log basis x=2,
           ymin=0,
-          xmin=1024,
-          xmax=268435456,
-          xtick={2048,262144,2097152,16777216,134217728},
+          xmin=-0.5,
+          xmax=4.5,
+          xtick={0,1,2,3,4},
           xticklabels={1/32,4,32,256,2048},
+          x filter/.expression={
+            (x < 100000 ? 0 :
+            (x < 1000000 ? 1 :
+            (x < 10000000 ? 2 :
+            (x < 100000000 ? 3 : 4))))
+          },
           grid=major,
           grid style={gray!30},
           tick label style={font=\small},
@@ -81,6 +99,7 @@
           tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
         ]
         \AddAllObjectsForDataSize{1}
+        \DrawAxisBreakZigzag
       \end{axis}
     \end{tikzpicture}
     \caption{\getScalingCaseName{1}}
@@ -91,17 +110,22 @@
     \centering
     \begin{tikzpicture}
       \begin{axis}[
+          clip=false,
           width=5cm,
           height=3.2cm,
           xlabel={Dataset Size (MB)},
           % ylabel={Throughput (M/s)},
-          xmode=log,
-          log basis x=2,
           ymin=0,
-          xmin=1024,
-          xmax=268435456,
-          xtick={2048,262144,2097152,16777216,134217728},
+          xmin=-0.5,
+          xmax=4.5,
+          xtick={0,1,2,3,4},
           xticklabels={1/32,4,32,256,2048},
+          x filter/.expression={
+            (x < 100000 ? 0 :
+            (x < 1000000 ? 1 :
+            (x < 10000000 ? 2 :
+            (x < 100000000 ? 3 : 4))))
+          },
           grid=major,
           grid style={gray!30},
           tick label style={font=\small},
@@ -110,6 +134,7 @@
           tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
         ]
         \AddAllObjectsForDataSize{3}
+        \DrawAxisBreakZigzag
       \end{axis}
     \end{tikzpicture}
     \caption{\getScalingCaseName{3}}
@@ -120,17 +145,22 @@
     \centering
     \begin{tikzpicture}
       \begin{axis}[
+          clip=false,
           width=5cm,
           height=3.2cm,
           xlabel={Dataset Size (MB)},
           % ylabel={Throughput (M/s)},
-          xmode=log,
-          log basis x=2,
           ymin=0,
-          xmin=1024,
-          xmax=268435456,
-          xtick={2048,262144,2097152,16777216,134217728},
+          xmin=-0.5,
+          xmax=4.5,
+          xtick={0,1,2,3,4},
           xticklabels={1/32,4,32,256,2048},
+          x filter/.expression={
+            (x < 100000 ? 0 :
+            (x < 1000000 ? 1 :
+            (x < 10000000 ? 2 :
+            (x < 100000000 ? 3 : 4))))
+          },
           grid=major,
           grid style={gray!30},
           tick label style={font=\small},
@@ -139,6 +169,7 @@
           tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
         ]
         \AddAllObjectsForDataSize{9}
+        \DrawAxisBreakZigzag
       \end{axis}
     \end{tikzpicture}
     \caption{\getScalingCaseName{9}}
@@ -149,17 +180,22 @@
     \centering
     \begin{tikzpicture}
       \begin{axis}[
+          clip=false,
           width=5cm,
           height=3.2cm,
           xlabel={Dataset Size (MB)},
           % ylabel={Throughput (M/s)},
-          xmode=log,
-          log basis x=2,
           ymin=0,
-          xmin=1024,
-          xmax=268435456,
-          xtick={2048,262144,2097152,16777216,134217728},
+          xmin=-0.5,
+          xmax=4.5,
+          xtick={0,1,2,3,4},
           xticklabels={1/32,4,32,256,2048},
+          x filter/.expression={
+            (x < 100000 ? 0 :
+            (x < 1000000 ? 1 :
+            (x < 10000000 ? 2 :
+            (x < 100000000 ? 3 : 4))))
+          },
           grid=major,
           grid style={gray!30},
           tick label style={font=\small},
@@ -168,6 +204,7 @@
           tick label style={/pgf/number format/fixed,/pgf/number format/precision=1}
         ]
         \AddAllObjectsForDataSize{10}
+        \DrawAxisBreakZigzag
       \end{axis}
     \end{tikzpicture}
     \caption{\getScalingCaseName{10}}
