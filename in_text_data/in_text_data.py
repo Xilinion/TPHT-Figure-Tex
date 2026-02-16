@@ -814,6 +814,41 @@ class DataProcessor:
             else:
                 print(f"Warning: No data found for {macro} (object_id={obj_id}) with completion > 25")
     
+    def calculate_smallest_dataset_metrics(self):
+        """
+        Calculate throughput metrics at the smallest dataset size (2^11 KV pairs, L1-resident).
+
+        Uses: data_size_scaling_results.csv
+        Calculates: Query throughputs and speedups over baselines at table_size=2047
+        """
+        df = self.get_dataframe('data_size_scaling_results')
+
+        smallest_size = 2047  # 2^11 - 1
+        baseline_objects = [6, 7, 15, 24]  # htthree, htfour, htfive, htsix
+
+        # Positive query (case_id=9) and negative query (case_id=10) at smallest size
+        for case_id, case_name in [(9, 'pos_query'), (10, 'neg_query')]:
+            small_data = df[(df['table_size'] == smallest_size) & (df['case_id'] == case_id)]
+
+            # Get htone and httwo throughputs
+            htone_tp = small_data[small_data['object_id'] == 17]['throughput (ops/s)'].values[0]
+            httwo_tp = small_data[small_data['object_id'] == 20]['throughput (ops/s)'].values[0]
+
+            self.add_result(f"htone_{case_name}_smallest_throughput", round(htone_tp / 1_000_000, 1))
+            self.add_result(f"httwo_{case_name}_smallest_throughput", round(httwo_tp / 1_000_000, 1))
+
+            # Speedup over fastest baseline
+            baseline_tps = []
+            for obj_id in baseline_objects:
+                obj_data = small_data[small_data['object_id'] == obj_id]
+                if not obj_data.empty:
+                    baseline_tps.append(obj_data['throughput (ops/s)'].values[0])
+
+            if baseline_tps:
+                best_baseline = max(baseline_tps)
+                self.add_result(f"htone_{case_name}_smallest_speedup", round(htone_tp / best_baseline, 1))
+                self.add_result(f"httwo_{case_name}_smallest_speedup", round(httwo_tp / best_baseline, 1))
+    
     # ==========================================================================
     # ADD YOUR CALCULATION FUNCTIONS HERE
     # ==========================================================================

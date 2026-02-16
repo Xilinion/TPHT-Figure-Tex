@@ -75,8 +75,8 @@ id,name,value
 74,max_whisker_diff_percent,0.019
 75,htone_thread_scaling_factor,0.908
 76,httwo_thread_scaling_factor,0.925
-77,htone_insertion_incache_performance_degradation_percent,14.3
-78,htfour_insertion_inmem_performance_degradation_percent,38.4
+77,htone_insertion_incache_performance_degradation_percent,9.6
+78,htfour_insertion_inmem_performance_degradation_percent,35.6
 79,httwo_latency_shave_percent,-13.6
 80,htthree_resizing_avg_fill_throughput,32.1
 81,htthree_resizing_avg_run_throughput,90.5
@@ -99,3 +99,11 @@ id,name,value
 98,httwo_worst_resizing_space_efficiency_percent,32.6
 99,htsix_worst_resizing_space_efficiency_percent,29.0
 100,htseven_worst_resizing_space_efficiency_percent,46.7
+101,htone_pos_query_smallest_throughput,37.7
+102,httwo_pos_query_smallest_throughput,53.0
+103,htone_pos_query_smallest_speedup,0.7
+104,httwo_pos_query_smallest_speedup,1.0
+105,htone_neg_query_smallest_throughput,75.3
+106,httwo_neg_query_smallest_throughput,68.1
+107,htone_neg_query_smallest_speedup,2.2
+108,httwo_neg_query_smallest_speedup,2.0
