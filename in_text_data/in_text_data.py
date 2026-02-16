@@ -385,6 +385,80 @@ class DataProcessor:
                         # If ratio is 1.1, it means httwo is 10% faster. If 0.9, it's 10% slower.
                         speed_diff_percent = abs((ratio_50 - 1) * 100)
                         self.add_result(f"httwo_{case_name}_speed_diff_50pct", round(speed_diff_percent, 1))
+
+    def calculate_compact_tradeoff_metrics(self):
+        """
+        Calculate compact-hash-table comparison metrics used in evaluation text.
+
+        Uses: throughput_space_eff_compact_results.csv
+        Calculates: space-efficiency and throughput-ratio numbers for compact methods.
+        """
+        df = self.get_dataframe('throughput_space_eff_compact_results')
+
+        # object_id mapping in compact experiments
+        # 4: \htone, 23: \httwo, 26: \htb, 27: \htg, 28: \htcp, 30: \htlp, 31: \htls
+        htone_id = 4
+        httwo_id = 23
+        htb_id = 26
+        htg_id = 27
+        htcp_id = 28
+        htlp_id = 30
+        htls_id = 31
+
+        # Best-case space efficiency (percentage)
+        htb_max_se = df[df['object_id'] == htb_id]['space_efficiency'].max() * 100
+        htg_max_se = df[df['object_id'] == htg_id]['space_efficiency'].max() * 100
+        htcp_max_se = df[df['object_id'] == htcp_id]['space_efficiency'].max() * 100
+        htlp_max_se = df[df['object_id'] == htlp_id]['space_efficiency'].max() * 100
+        htls_max_se = df[df['object_id'] == htls_id]['space_efficiency'].max() * 100
+
+        self.add_result("compact_bucketing_max_space_efficiency_percent", round(max(htb_max_se, htg_max_se), 1))
+        self.add_result("htcp_max_space_efficiency_percent", round(htcp_max_se, 1))
+        self.add_result("htlp_max_space_efficiency_percent", round(htlp_max_se, 1))
+
+        # Throughput comparisons at similar high space-efficiency point (case_id=1, nearest to se=1.0)
+        def nearest_tp(obj_id: int, target_se: float = 1.0) -> float:
+            obj_case = df[(df['object_id'] == obj_id) & (df['case_id'] == 1)].copy()
+            obj_case['se_diff'] = (obj_case['space_efficiency'] - target_se).abs()
+            return obj_case.sort_values('se_diff').iloc[0]['throughput_millions']
+
+        htone_tp_near = nearest_tp(htone_id)
+        htb_tp_near = nearest_tp(htb_id)
+        htg_tp_near = nearest_tp(htg_id)
+        htcp_tp_near = nearest_tp(htcp_id)
+        htlp_tp_near = nearest_tp(htlp_id)
+        htls_tp_near = nearest_tp(htls_id)
+        httwo_tp_near = nearest_tp(httwo_id)
+
+        # For bucketing methods, use the smaller speedup to be conservative
+        bucketing_speedup_min = min(htone_tp_near / htb_tp_near, htone_tp_near / htg_tp_near)
+        self.add_result("compact_bucketing_htone_speedup", round(bucketing_speedup_min, 1))
+
+        # \htone over \htcp
+        htone_over_htcp = htone_tp_near / htcp_tp_near
+        self.add_result("htone_over_htcp_speedup", round(htone_over_htcp, 2))
+        self.add_result("htone_by_htcp_percent", round((htone_over_htcp - 1) * 100, 1))
+
+        # \httwo over \htlp
+        self.add_result("httwo_over_htlp_speedup", round(httwo_tp_near / htlp_tp_near, 2))
+
+        # \htls tradeoff relative to \htlp
+        htls_perf_drop = (htlp_tp_near - htls_tp_near) / htlp_tp_near * 100
+        htls_space_gain = htls_max_se - htlp_max_se
+        self.add_result("htls_perf_drop_vs_htlp_percent", round(htls_perf_drop, 1))
+        self.add_result("htls_space_gain_vs_htlp_percent", round(htls_space_gain, 1))
+
+        # \htone average throughput vs compact baselines (exclude \htone and \httwo)
+        compact_baseline_ids = [htb_id, htg_id, htcp_id, htlp_id, htls_id]
+        compact_case = df[df['case_id'] == 1].copy()
+        htone_avg_tp = compact_case[compact_case['object_id'] == htone_id]['throughput_millions'].mean()
+        baseline_tps = compact_case[compact_case['object_id'].isin(compact_baseline_ids)].groupby('object_id')['throughput_millions'].mean()
+        valid_baseline_tps = baseline_tps[baseline_tps > 0]
+        if htone_avg_tp > 0 and not valid_baseline_tps.empty:
+            per_baseline_speedups = htone_avg_tp / valid_baseline_tps
+            htone_over_compact_avg = per_baseline_speedups.mean()
+            self.add_result("htone_over_compact_avg_speedup", round(htone_over_compact_avg, 2))
+            self.add_result("htone_by_compact_avg_percent", round((htone_over_compact_avg - 1) * 100, 1))
                     
     
     def calculate_load_factor_metrics(self):
@@ -763,6 +837,80 @@ class DataProcessor:
         # Calculate percentage decrease
         httwo_fill_decrease_percent = ((httwo_no_resizing_fill_raw - httwo_resizing_fill_raw) / httwo_no_resizing_fill_raw) * 100
         self.add_result("httwo_resizing_fill_throughput_decrease_percent", round(httwo_fill_decrease_percent, 1))
+
+    def calculate_progressive_resizing_sliding_window_metrics(self):
+        """
+        Calculate throughput-drop metrics from progressive resizing sliding windows.
+
+        Uses: progressive_resizing_sliding_window_results.csv
+        Calculates: average drop for \httwo (object_id=21, case_id=30),
+        measured from a short post-resize period to the point right before
+        the next resize. Resizing windows themselves are excluded.
+        """
+        df = self.get_dataframe('progressive_resizing_sliding_window_results')
+
+        httwo_windows = df[(df['case_id'] == 30) & (df['object_id'] == 21)].copy()
+        if httwo_windows.empty:
+            print("Warning: No sliding-window progressive resizing data for httwo")
+            return
+
+        httwo_windows = httwo_windows.sort_values('window')
+        throughputs = httwo_windows['throughput (ops/s)'].to_numpy(dtype=float)
+
+        # Detect resizing windows as sharp throughput dips with subsequent recovery.
+        resize_events = []
+        i = 1
+        while i < len(throughputs) - 1:
+            before = throughputs[i - 1]
+            if before <= 0:
+                i += 1
+                continue
+
+            if throughputs[i] < 0.3 * before:
+                j = i
+                # Group contiguous dip windows under the same pre-resize baseline.
+                while j + 1 < len(throughputs) - 1 and throughputs[j + 1] < 0.3 * before:
+                    j += 1
+
+                dip_mean = throughputs[i:j + 1].mean()
+                # Require visible recovery in the next window.
+                if throughputs[j + 1] > 1.5 * dip_mean:
+                    resize_events.append((i, j))
+                    i = j + 1
+                    continue
+
+            i += 1
+
+        if len(resize_events) < 2:
+            print("Warning: Not enough resize events detected for inter-resize drop metric")
+            return
+
+        # For each resize cycle, compare:
+        #   post-resize period (just after current resize) vs
+        #   last window before next resize.
+        drops = []
+        for idx in range(len(resize_events) - 1):
+            _, cur_end = resize_events[idx]
+            next_start, _ = resize_events[idx + 1]
+
+            post_start = cur_end + 1
+            pre_next_idx = next_start - 1
+            if post_start > pre_next_idx:
+                continue
+
+            # Post-resize "period": take up to first 3 non-resize windows.
+            post_end = min(post_start + 2, pre_next_idx)
+            post_level = throughputs[post_start:post_end + 1].mean()
+            pre_next_level = throughputs[pre_next_idx]
+
+            if post_level > 0:
+                drop_percent = ((post_level - pre_next_level) / post_level) * 100
+                drops.append(drop_percent)
+
+        if drops:
+            self.add_result("httwo_resizing_throughput_drop_percent", round(float(np.mean(drops)), 1))
+        else:
+            print("Warning: No valid inter-resize segments detected for httwo")
     
     def calculate_resizing_space_efficiency_metrics(self):
         """
@@ -848,6 +996,38 @@ class DataProcessor:
                 best_baseline = max(baseline_tps)
                 self.add_result(f"htone_{case_name}_smallest_speedup", round(htone_tp / best_baseline, 1))
                 self.add_result(f"httwo_{case_name}_smallest_speedup", round(httwo_tp / best_baseline, 1))
+
+    def calculate_tinypointers_comparison_metrics(self):
+        """
+        Calculate throughput speedup range for TinyPointers comparison.
+
+        Uses: tinypointers_comparison_results.csv
+        Calculates: min/max average-throughput speedup of TP^ours (object_id=35)
+        over three baselines TP^simple/TP^fixed/TP^var (object_id=32/33/34).
+        """
+        df = self.get_dataframe('tinypointers_comparison_results')
+
+        target_ids = [32, 33, 34, 35]
+        comp_df = df[df['object_id'].isin(target_ids)].copy()
+        if comp_df.empty:
+            print("Warning: No data found for TinyPointers comparison metrics")
+            return
+
+        avg_tp = comp_df.groupby('object_id')['throughput'].mean().to_dict()
+        if 35 not in avg_tp:
+            print("Warning: No TP^ours (object_id=35) data found")
+            return
+
+        ours_avg = avg_tp[35]
+        baseline_ids = [32, 33, 34]
+        speedups = [ours_avg / avg_tp[obj_id] for obj_id in baseline_ids if obj_id in avg_tp and avg_tp[obj_id] > 0]
+
+        if not speedups:
+            print("Warning: No valid TinyPointers baseline data found")
+            return
+
+        self.add_result("tp_ours_speedup_min", round(min(speedups), 2))
+        self.add_result("tp_ours_speedup_max", round(max(speedups), 2))
     
     # ==========================================================================
     # ADD YOUR CALCULATION FUNCTIONS HERE
@@ -877,6 +1057,7 @@ class DataProcessor:
         # Add calls to all your calculation functions here
         self.calculate_throughput_metrics()
         self.calculate_tradeoff_metrics()
+        self.calculate_compact_tradeoff_metrics()
         self.calculate_load_factor_metrics()
         self.calculate_occupancy_analysis_metrics()
         self.calculate_tpht_thread_scaling_factor()
@@ -884,7 +1065,10 @@ class DataProcessor:
         self.calculate_inmem_performance_degradation()
         self.calculate_latency_shaving_metrics()
         self.calculate_resizing_metrics()
+        self.calculate_progressive_resizing_sliding_window_metrics()
         self.calculate_resizing_space_efficiency_metrics()
+        self.calculate_tinypointers_comparison_metrics()
+        self.calculate_smallest_dataset_metrics()
         # Add calls to your new functions here:
         # self.your_new_function()
         
