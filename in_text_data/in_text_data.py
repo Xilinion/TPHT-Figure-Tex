@@ -457,6 +457,10 @@ class DataProcessor:
         if htone_avg_tp > 0 and not valid_baseline_tps.empty:
             per_baseline_speedups = htone_avg_tp / valid_baseline_tps
             htone_over_compact_avg = per_baseline_speedups.mean()
+            htone_over_compact_min = per_baseline_speedups.min()
+            htone_over_compact_max = per_baseline_speedups.max()
+            self.add_result("htone_over_compact_min_speedup", round(htone_over_compact_min, 2))
+            self.add_result("htone_over_compact_max_speedup", round(htone_over_compact_max, 2))
             self.add_result("htone_over_compact_avg_speedup", round(htone_over_compact_avg, 2))
             self.add_result("htone_by_compact_avg_percent", round((htone_over_compact_avg - 1) * 100, 1))
                     
