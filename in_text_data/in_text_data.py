@@ -1033,10 +1033,47 @@ class DataProcessor:
         self.add_result("tp_ours_speedup_min", round(min(speedups), 2))
         self.add_result("tp_ours_speedup_max", round(max(speedups), 2))
     
+    def calculate_small_table_metrics(self):
+        """
+        Calculate throughput and speedup metrics for the L1-sized small table benchmark.
+
+        Uses: small_table_results.csv
+        Calculates: throughput of htone/httwo per operation, and speedup/percent
+        improvement over the best baseline for each operation.
+        """
+        df = self.get_dataframe('small_table_results')
+
+        baseline_objects = [6, 7, 15, 24]  # htthree, htfour, htfive, htsix
+
+        for case_id, case_name in [(1, 'insert'), (3, 'delete'), (9, 'posquery'), (10, 'negquery')]:
+            case_data = df[df['case_id'] == case_id]
+
+            baseline_tps = {}
+            for obj_id in baseline_objects:
+                row = case_data[case_data['object_id'] == obj_id]
+                if not row.empty:
+                    baseline_tps[obj_id] = row['throughput'].values[0]
+
+            if not baseline_tps:
+                continue
+
+            best_baseline_tp = max(baseline_tps.values())
+
+            for obj_id, macro in [(17, 'htone'), (20, 'httwo')]:
+                row = case_data[case_data['object_id'] == obj_id]
+                if row.empty:
+                    continue
+                tp = row['throughput'].values[0]
+                speedup = tp / best_baseline_tp
+                percent = (speedup - 1) * 100
+                self.add_result(f"{macro}_small_{case_name}_throughput", round(tp / 1e6, 1))
+                self.add_result(f"{macro}_small_{case_name}_speedup", round(speedup, 2))
+                self.add_result(f"{macro}_small_{case_name}_percent", round(percent, 1))
+
     # ==========================================================================
     # ADD YOUR CALCULATION FUNCTIONS HERE
     # ==========================================================================
-    
+
     def your_calculation_function_template(self):
         """
         Template for adding new calculation functions.
@@ -1073,6 +1110,7 @@ class DataProcessor:
         self.calculate_resizing_space_efficiency_metrics()
         self.calculate_tinypointers_comparison_metrics()
         self.calculate_smallest_dataset_metrics()
+        self.calculate_small_table_metrics()
         # Add calls to your new functions here:
         # self.your_new_function()
         
