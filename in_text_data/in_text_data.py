@@ -391,78 +391,119 @@ class DataProcessor:
         Calculate compact-hash-table comparison metrics used in evaluation text.
 
         Uses: throughput_space_eff_compact_results.csv
-        Calculates: space-efficiency and throughput-ratio numbers for compact methods.
+        case_id=1: insertion, case_id=9: positive query, case_id=10: negative query.
+        Calculates: space-efficiency (once) and throughput-ratio numbers per operation
+        and averaged over insertion + pos query + neg query.
         """
         df = self.get_dataframe('throughput_space_eff_compact_results')
 
         # object_id mapping in compact experiments
-        # 4: \htone, 23: \httwo, 26: \htb, 27: \htg, 28: \htcp, 30: \htlp, 31: \htls
+        # 4: \htone, 23: \httwo, 26: \htb, 27: \htg, 28: \htcp, 29: \htcs, 30: \htlp, 31: \htls
         htone_id = 4
         httwo_id = 23
         htb_id = 26
         htg_id = 27
         htcp_id = 28
+        htcs_id = 29
         htlp_id = 30
         htls_id = 31
 
-        # Best-case space efficiency (percentage)
+        # Best-case space efficiency (percentage) — same for all cases
         htb_max_se = df[df['object_id'] == htb_id]['space_efficiency'].max() * 100
         htg_max_se = df[df['object_id'] == htg_id]['space_efficiency'].max() * 100
         htcp_max_se = df[df['object_id'] == htcp_id]['space_efficiency'].max() * 100
+        htcs_max_se = df[df['object_id'] == htcs_id]['space_efficiency'].max() * 100
         htlp_max_se = df[df['object_id'] == htlp_id]['space_efficiency'].max() * 100
         htls_max_se = df[df['object_id'] == htls_id]['space_efficiency'].max() * 100
 
         self.add_result("compact_bucketing_max_space_efficiency_percent", round(max(htb_max_se, htg_max_se), 1))
         self.add_result("htcp_max_space_efficiency_percent", round(htcp_max_se, 1))
+        self.add_result("htcs_max_space_efficiency_percent", round(htcs_max_se, 1))
         self.add_result("htlp_max_space_efficiency_percent", round(htlp_max_se, 1))
 
-        # Throughput comparisons at similar high space-efficiency point (case_id=1, nearest to se=1.0)
-        def nearest_tp(obj_id: int, target_se: float = 1.0) -> float:
-            obj_case = df[(df['object_id'] == obj_id) & (df['case_id'] == 1)].copy()
+        # Throughput: nearest to se=1.0 within a given case_id (same CSV reading as case_id=1)
+        def nearest_tp(obj_id: int, case_id: int, target_se: float = 1.0) -> float:
+            obj_case = df[(df['object_id'] == obj_id) & (df['case_id'] == case_id)].copy()
             obj_case['se_diff'] = (obj_case['space_efficiency'] - target_se).abs()
             return obj_case.sort_values('se_diff').iloc[0]['throughput_millions']
 
-        htone_tp_near = nearest_tp(htone_id)
-        htb_tp_near = nearest_tp(htb_id)
-        htg_tp_near = nearest_tp(htg_id)
-        htcp_tp_near = nearest_tp(htcp_id)
-        htlp_tp_near = nearest_tp(htlp_id)
-        htls_tp_near = nearest_tp(htls_id)
-        httwo_tp_near = nearest_tp(httwo_id)
+        # case_id 1 = insertion, 9 = pos query, 10 = neg query
+        cases = [(1, "insert"), (9, "pos_query"), (10, "neg_query")]
+        compact_baseline_ids = [htb_id, htg_id, htcp_id, htcs_id]
 
-        # For bucketing methods, use the smaller speedup to be conservative
-        bucketing_speedup_min = min(htone_tp_near / htb_tp_near, htone_tp_near / htg_tp_near)
-        self.add_result("compact_bucketing_htone_speedup", round(bucketing_speedup_min, 1))
+        # Collect per-operation metrics for averaging
+        # keys that get _insert, _pos_query, _neg_query, and _avg
+        throughput_result_keys = [
+            "compact_bucketing_htone_speedup",
+            "htone_over_htcp_speedup",
+            "htone_by_htcp_percent",
+            "httwo_over_htlp_speedup",
+            "htls_perf_drop_vs_htlp_percent",
+            "htone_over_compact_min_speedup",
+            "htone_over_compact_max_speedup",
+            "htone_over_compact_avg_speedup",
+            "htone_by_compact_avg_percent",
+        ]
+        values_by_key_by_suffix: dict[str, dict[str, float]] = {k: {} for k in throughput_result_keys}
 
-        # \htone over \htcp
-        htone_over_htcp = htone_tp_near / htcp_tp_near
-        self.add_result("htone_over_htcp_speedup", round(htone_over_htcp, 2))
-        self.add_result("htone_by_htcp_percent", round((htone_over_htcp - 1) * 100, 1))
+        for case_id, suffix in cases:
+            htone_tp = nearest_tp(htone_id, case_id)
+            htb_tp = nearest_tp(htb_id, case_id)
+            htg_tp = nearest_tp(htg_id, case_id)
+            htcp_tp = nearest_tp(htcp_id, case_id)
+            htcs_tp = nearest_tp(htcs_id, case_id)
+            htlp_tp = nearest_tp(htlp_id, case_id)
+            htls_tp = nearest_tp(htls_id, case_id)
+            httwo_tp = nearest_tp(httwo_id, case_id)
 
-        # \httwo over \htlp
-        self.add_result("httwo_over_htlp_speedup", round(httwo_tp_near / htlp_tp_near, 2))
+            bucketing_speedup_min = min(htone_tp / htb_tp, htone_tp / htg_tp)
+            values_by_key_by_suffix["compact_bucketing_htone_speedup"][suffix] = round(bucketing_speedup_min, 1)
 
-        # \htls tradeoff relative to \htlp
-        htls_perf_drop = (htlp_tp_near - htls_tp_near) / htlp_tp_near * 100
+            htone_over_htcp = htone_tp / htcp_tp
+            values_by_key_by_suffix["htone_over_htcp_speedup"][suffix] = round(htone_over_htcp, 2)
+            values_by_key_by_suffix["htone_by_htcp_percent"][suffix] = round((htone_over_htcp - 1) * 100, 1)
+
+            values_by_key_by_suffix["httwo_over_htlp_speedup"][suffix] = round(httwo_tp / htlp_tp, 2)
+
+            htls_perf_drop = (htlp_tp - htls_tp) / htlp_tp * 100
+            values_by_key_by_suffix["htls_perf_drop_vs_htlp_percent"][suffix] = round(htls_perf_drop, 1)
+
+            compact_case = df[df['case_id'] == case_id].copy()
+            htone_avg_tp = compact_case[compact_case['object_id'] == htone_id]['throughput_millions'].mean()
+            baseline_tps = compact_case[compact_case['object_id'].isin(compact_baseline_ids)].groupby('object_id')['throughput_millions'].mean()
+            valid_baseline_tps = baseline_tps[baseline_tps > 0]
+            if htone_avg_tp > 0 and not valid_baseline_tps.empty:
+                per_baseline_speedups = htone_avg_tp / valid_baseline_tps
+                htone_over_compact_avg = per_baseline_speedups.mean()
+                htone_over_compact_min = per_baseline_speedups.min()
+                htone_over_compact_max = per_baseline_speedups.max()
+                values_by_key_by_suffix["htone_over_compact_min_speedup"][suffix] = round(htone_over_compact_min, 2)
+                values_by_key_by_suffix["htone_over_compact_max_speedup"][suffix] = round(htone_over_compact_max, 2)
+                values_by_key_by_suffix["htone_over_compact_avg_speedup"][suffix] = round(htone_over_compact_avg, 2)
+                values_by_key_by_suffix["htone_by_compact_avg_percent"][suffix] = round((htone_over_compact_avg - 1) * 100, 1)
+
+        # Add per-operation results and averaged results
+        for key in throughput_result_keys:
+            by_suffix = values_by_key_by_suffix[key]
+            for suf in ["insert", "pos_query", "neg_query"]:
+                if suf in by_suffix:
+                    self.add_result(f"{key}_{suf}", by_suffix[suf])
+            if by_suffix:
+                n = len(by_suffix)
+                avg_val = sum(by_suffix[s] for s in ["insert", "pos_query", "neg_query"] if s in by_suffix) / n
+                if "percent" in key:
+                    self.add_result(f"{key}_avg", round(avg_val, 1))
+                else:
+                    self.add_result(f"{key}_avg", round(avg_val, 2))
+
+        # Backward compatibility: unsuffixed = insertion (case_id=1)
+        for key in throughput_result_keys:
+            if "insert" in values_by_key_by_suffix[key]:
+                self.add_result(key, values_by_key_by_suffix[key]["insert"])
+
+        # Space-only metric (same for all cases)
         htls_space_gain = htls_max_se - htlp_max_se
-        self.add_result("htls_perf_drop_vs_htlp_percent", round(htls_perf_drop, 1))
         self.add_result("htls_space_gain_vs_htlp_percent", round(htls_space_gain, 1))
-
-        # \htone average throughput vs compact baselines (exclude \htone and \httwo)
-        compact_baseline_ids = [htb_id, htg_id, htcp_id, htlp_id, htls_id]
-        compact_case = df[df['case_id'] == 1].copy()
-        htone_avg_tp = compact_case[compact_case['object_id'] == htone_id]['throughput_millions'].mean()
-        baseline_tps = compact_case[compact_case['object_id'].isin(compact_baseline_ids)].groupby('object_id')['throughput_millions'].mean()
-        valid_baseline_tps = baseline_tps[baseline_tps > 0]
-        if htone_avg_tp > 0 and not valid_baseline_tps.empty:
-            per_baseline_speedups = htone_avg_tp / valid_baseline_tps
-            htone_over_compact_avg = per_baseline_speedups.mean()
-            htone_over_compact_min = per_baseline_speedups.min()
-            htone_over_compact_max = per_baseline_speedups.max()
-            self.add_result("htone_over_compact_min_speedup", round(htone_over_compact_min, 2))
-            self.add_result("htone_over_compact_max_speedup", round(htone_over_compact_max, 2))
-            self.add_result("htone_over_compact_avg_speedup", round(htone_over_compact_avg, 2))
-            self.add_result("htone_by_compact_avg_percent", round((htone_over_compact_avg - 1) * 100, 1))
                     
     
     def calculate_load_factor_metrics(self):
