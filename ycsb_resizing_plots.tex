@@ -1,9 +1,10 @@
 \begin{figure}[h]
     \centering
     \pgfplotslegendfromname{throughput-legend-3column}
+    \resizebox{\linewidth}{!}{%
     \begin{tikzpicture}
         \begin{axis}[
-                width=\linewidth,
+                width=8.5cm,
                 height=3.8cm,
                 ylabel={Throughput (M/s)},
                 ybar,
@@ -18,7 +19,7 @@
                 tick align=inside,
                 xtick style={draw=none},
                 scaled ticks=true,
-                tick label style={/pgf/number format/fixed,/pgf/number format/precision=1},
+                tick label style={font=\small, /pgf/number format/fixed,/pgf/number format/precision=1},
                 ymajorgrids=true,
                 yminorgrids=true,
                 minor tick num=1,
@@ -32,16 +33,18 @@
                 nodes near coords style={/pgf/number format/fixed, /pgf/number format/precision=0, font=\tiny, rotate=90, anchor=west, yshift=0.5pt, xshift=0.3pt},
                 legend entries = {\htthree, \htfour, \htfive, \htsix, \htone, \httwo},
                 legend cell align = left,
-                legend style={draw=none, legend columns=3, /tikz/every even column/.append style={column sep=1cm}},
+                legend style={draw=none, legend columns=3, /tikz/every even column/.append style={column sep=0.1cm}},
                 legend to name={throughput-legend-3column},
                 unbounded coords=discard,
                 filter discard warning=false,
+                label style={font=\small}
             ]
 
             \addResizingPlots;
 
         \end{axis}
-    \end{tikzpicture}
+    \end{tikzpicture}%
+    }
 
     \caption{Performance of hash tables on YCSB workloads with 16 threads (resizing enabled).}\label{fig:throughput_subfigures_resizing}
 \end{figure}

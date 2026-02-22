@@ -1,6 +1,7 @@
 % Resizing RSS plot: reads csv/resizing_rss.csv and plots completion vs memory
 \begin{figure}[h]
     \centering
+    \resizebox{\linewidth}{!}{%
     \begin{tikzpicture}
         \begin{axis}[
                 width=8.5cm,
@@ -11,7 +12,7 @@
                 ymin=0,
                 grid=both,
                 grid style={gray!30},
-                legend style={draw=none, at={(0.5,1.02)}, anchor=south, legend columns=3, legend cell align=left},
+                % legend style={draw=none, at={(0.5,1.02)}, anchor=south, legend columns=3, legend cell align=left},
                 tick label style={font=\small},
                 label style={font=\small}
             ]
@@ -52,8 +53,11 @@
             % Object 25 = Stagger ByteArray Chained HT (htseven)
             \addplot[TPHTLineStyle, mark=none, sharp plot, dashed]
             table[x=completion, y=memory_mb, restrict expr to domain={\thisrow{object_id}}{25:25}] {\resizingrssdata};
-
+            
+            \legend{}
+            
         \end{axis}
-    \end{tikzpicture}
+    \end{tikzpicture}%
+    }
     \caption{Memory usage during resizing. The dashed line indicates staggering enabled.}\label{fig:resizing_rss_plot}
 \end{figure}
