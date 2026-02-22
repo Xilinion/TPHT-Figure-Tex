@@ -11,7 +11,6 @@
             label style={font=\small},
             scaled ticks=true,
             tick label style={/pgf/number format/fixed,/pgf/number format/precision=2},
-            xtick distance=0.2,
             minor tick num=1
         },
     spaceeff compact axis with ylabel/.style={
@@ -44,7 +43,7 @@
 
 \begin{figure*}[h]
     \centering
-    {\pgfplotslegendfromname{spaceeff-legend-compact}}
+    {\pgfplotslegendfromname{spaceeff-legend-compact}\par}
 
     \begin{subfigure}[b]{0.35\linewidth}
         \centering

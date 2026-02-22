@@ -52,6 +52,16 @@
     ] {\datasizedata};
 }
 
+% Local axis-label/tick shifts for this figure only
+\pgfplotsset{
+  data size local shifts/.style={
+    xticklabel style={yshift=-1pt},
+    yticklabel style={xshift=-1pt},
+    xlabel style={yshift=-1pt},
+    ylabel style={xshift=1pt}
+  }
+}
+
 % Axis break zigzag macro (draws on x-axis between positions 0 and 1)
 % \newcommand{\DrawAxisBreakZigzag}{%
 %   \draw[white, line width=4pt] (axis cs:0.5,0) +(-6pt,-4pt) rectangle +(6pt,4pt);
@@ -68,17 +78,18 @@
 % Shared legend (reuse scaling legend styles)
 \begin{figure*}[h]
   \centering
-  {\pgfplotslegendfromname{spaceeff-legend}}
+  {\pgfplotslegendfromname{spaceeff-legend}\par}
   % Case 1
   \begin{subfigure}[b]{0.27\textwidth}
     \tiny
     \centering
     \begin{tikzpicture}
       \begin{axis}[
+          data size local shifts,
           clip=false,
           width=5cm,
           height=3.2cm,
-          xlabel={Dataset Size (MB)},
+          xlabel={Dataset Size a(MB)},
           ylabel={Throughput (M/s)},
           ymin=0,
           xmin=-0.5,
@@ -110,6 +121,7 @@
     \centering
     \begin{tikzpicture}
       \begin{axis}[
+          data size local shifts,
           clip=false,
           width=5cm,
           height=3.2cm,
@@ -145,6 +157,7 @@
     \centering
     \begin{tikzpicture}
       \begin{axis}[
+          data size local shifts,
           clip=false,
           width=5cm,
           height=3.2cm,
@@ -180,6 +193,7 @@
     \centering
     \begin{tikzpicture}
       \begin{axis}[
+          data size local shifts,
           clip=false,
           width=5cm,
           height=3.2cm,
