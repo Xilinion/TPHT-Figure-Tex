@@ -1081,10 +1081,13 @@ class DataProcessor:
         Uses: small_table_results.csv
         Calculates: throughput of htone/httwo per operation, and speedup/percent
         improvement over the best baseline for each operation.
+        Also computes per-object averages across all 4 operations, and speedup of
+        htone/httwo over the best and worst baselines on average.
         """
         df = self.get_dataframe('small_table_results')
 
         baseline_objects = [6, 7, 15, 24]  # htthree, htfour, htfive, htsix
+        obj_label = {6: 'htthree', 7: 'htfour', 15: 'htfive', 24: 'htsix', 17: 'htone', 20: 'httwo'}
 
         for case_id, case_name in [(1, 'insert'), (3, 'delete'), (9, 'posquery'), (10, 'negquery')]:
             case_data = df[df['case_id'] == case_id]
@@ -1110,6 +1113,82 @@ class DataProcessor:
                 self.add_result(f"{macro}_small_{case_name}_throughput", round(tp / 1e6, 1))
                 self.add_result(f"{macro}_small_{case_name}_speedup", round(speedup, 2))
                 self.add_result(f"{macro}_small_{case_name}_percent", round(percent, 1))
+
+        # === Averages across all 4 operations ===
+        all_case_ids = [1, 3, 9, 10]
+        avg_tps = {}
+        for obj_id, label in obj_label.items():
+            tps = []
+            for case_id in all_case_ids:
+                row = df[(df['case_id'] == case_id) & (df['object_id'] == obj_id)]
+                if not row.empty:
+                    tps.append(row['throughput'].values[0])
+            if tps:
+                avg_tps[obj_id] = sum(tps) / len(tps)
+                self.add_result(f"{label}_small_avg_throughput", round(avg_tps[obj_id] / 1e6, 1))
+
+        # Best and worst baseline by average throughput
+        baseline_avgs = {obj_id: avg_tps[obj_id] for obj_id in baseline_objects if obj_id in avg_tps}
+        if baseline_avgs:
+            best_baseline_obj = max(baseline_avgs, key=lambda k: baseline_avgs[k])
+            worst_baseline_obj = min(baseline_avgs, key=lambda k: baseline_avgs[k])
+            best_baseline_avg_tp = baseline_avgs[best_baseline_obj]
+            worst_baseline_avg_tp = baseline_avgs[worst_baseline_obj]
+
+            for obj_id, macro in [(17, 'htone'), (20, 'httwo')]:
+                if obj_id in avg_tps:
+                    avg_tp = avg_tps[obj_id]
+                    self.add_result(f"{macro}_small_avg_speedup_over_best", round(avg_tp / best_baseline_avg_tp, 2))
+                    self.add_result(f"{macro}_small_avg_percent_over_best", round((avg_tp / best_baseline_avg_tp - 1) * 100, 1))
+                    self.add_result(f"{macro}_small_avg_speedup_over_worst", round(avg_tp / worst_baseline_avg_tp, 2))
+                    self.add_result(f"{macro}_small_avg_percent_over_worst", round((avg_tp / worst_baseline_avg_tp - 1) * 100, 1))
+
+    def calculate_data_size_scaling_avg_metrics(self):
+        """
+        Calculate per-object average throughput across 4 operations at each table size
+        in the data-size-scaling experiment.
+
+        Uses: data_size_scaling_results.csv
+        Calculates: average throughput (M/s) for each object at each representative
+        table size (small=2047, large=134217727), and speedup of htone/httwo over
+        best and worst baselines at the large size.
+        """
+        df = self.get_dataframe('data_size_scaling_results')
+
+        baseline_objects = [6, 7, 15, 24]  # htthree, htfour, htfive, htsix
+        obj_label = {6: 'htthree', 7: 'htfour', 15: 'htfive', 24: 'htsix', 17: 'htone', 20: 'httwo'}
+        all_case_ids = [1, 3, 9, 10]
+
+        size_labels = {
+            2047: 'small',       # L1-sized
+            134217727: 'large',  # 2 GB, far beyond L3
+        }
+
+        for table_size, size_label in size_labels.items():
+            size_df = df[df['table_size'] == table_size]
+            avg_tps = {}
+            for obj_id, label in obj_label.items():
+                tps = []
+                for case_id in all_case_ids:
+                    row = size_df[(size_df['case_id'] == case_id) & (size_df['object_id'] == obj_id)]
+                    if not row.empty:
+                        tps.append(row['throughput (ops/s)'].values[0])
+                if tps:
+                    avg_tps[obj_id] = sum(tps) / len(tps)
+                    self.add_result(f"{label}_scaling_{size_label}_avg_throughput", round(avg_tps[obj_id] / 1e6, 1))
+
+            # Speedup over best/worst baseline at this size
+            baseline_avgs = {obj_id: avg_tps[obj_id] for obj_id in baseline_objects if obj_id in avg_tps}
+            if baseline_avgs:
+                best_obj = max(baseline_avgs, key=lambda k: baseline_avgs[k])
+                worst_obj = min(baseline_avgs, key=lambda k: baseline_avgs[k])
+                best_tp = baseline_avgs[best_obj]
+                worst_tp = baseline_avgs[worst_obj]
+                for obj_id, macro in [(17, 'htone'), (20, 'httwo')]:
+                    if obj_id in avg_tps:
+                        tp = avg_tps[obj_id]
+                        self.add_result(f"{macro}_scaling_{size_label}_avg_speedup_over_best", round(tp / best_tp, 2))
+                        self.add_result(f"{macro}_scaling_{size_label}_avg_speedup_over_worst", round(tp / worst_tp, 2))
 
     # ==========================================================================
     # ADD YOUR CALCULATION FUNCTIONS HERE
@@ -1152,6 +1231,7 @@ class DataProcessor:
         self.calculate_tinypointers_comparison_metrics()
         self.calculate_smallest_dataset_metrics()
         self.calculate_small_table_metrics()
+        self.calculate_data_size_scaling_avg_metrics()
         # Add calls to your new functions here:
         # self.your_new_function()
         
